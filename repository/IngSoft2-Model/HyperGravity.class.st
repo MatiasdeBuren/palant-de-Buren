@@ -13,9 +13,8 @@ HyperGravity class >> withNecessaryRolledResult: someResult [
 ]
 
 { #category : #application }
-HyperGravity >> applyEffect: affectedPlayer [
-
-	affectedPlayer ship setGravity: necessaryRolledResult
+HyperGravity >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessaryRolledResult.
 ]
 
 { #category : #initialization }

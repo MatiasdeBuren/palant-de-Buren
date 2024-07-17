@@ -13,12 +13,8 @@ HyperJump class >> withUnits: aUnitList withBoard: aBoard [
 ]
 
 { #category : #application }
-HyperJump >> applyEffect: affectedPlayer [
-
-	board
-		move: affectedPlayer
-		distance:
-		(self cycleDistance)
+HyperJump >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyHyperJumpOn: aPlayer withCycleDistance: self cycleDistance
 ]
 
 { #category : #utility }

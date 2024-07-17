@@ -12,11 +12,9 @@ WormEffect class >> withLink: linkPos [
 	^(self new) initializeLink: linkPos.
 ]
 
-{ #category : #application }
-WormEffect >> applyEffect: affectedPlayer [
-
-	board takeOut: affectedPlayer.
-	board place: affectedPlayer at: linkPosition
+{ #category : #'as yet unclassified' }
+WormEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyWormOn: aPlayer withLink: linkPosition
 ]
 
 { #category : #initialization }

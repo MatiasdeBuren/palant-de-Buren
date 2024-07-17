@@ -5,7 +5,6 @@ Class {
 }
 
 { #category : #application }
-BlackHole >> applyEffect: affectedPlayer [
-
-	board move: (affectedPlayer) distance: -4
+BlackHole >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyBlackWholeOn: aPlayer.
 ]

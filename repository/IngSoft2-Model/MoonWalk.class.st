@@ -13,12 +13,8 @@ MoonWalk class >> withDistance: aDistance [
 ]
 
 { #category : #application }
-MoonWalk >> applyEffect: affectedPlayer [
-
-	players do: [ :aPlayer |
-		affectedPlayer = aPlayer ifFalse: [
-			aPlayer ship getGravity > 0 ifFalse: [
-				board move: aPlayer distance: myDistance * -1 ] ] ]
+MoonWalk >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyMoonWalkWithDistance: myDistance triggeredBy: aPlayer.
 ]
 
 { #category : #initialization }

@@ -1,17 +1,12 @@
 Class {
 	#name : #Effect,
 	#superclass : #Object,
-	#instVars : [
-		'players',
-		'board'
-	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #application }
-Effect >> applyEffect: affectedPlayer [
-
-	self subclassResponsibility
+{ #category : #'as yet unclassified' }
+Effect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	self subclassResponsibility 
 ]
 
 { #category : #application }

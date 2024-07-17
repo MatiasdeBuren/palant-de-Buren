@@ -8,6 +8,6 @@ Class {
 }
 
 { #category : #application }
-CardDealer >> applyEffect: affectedPlayer [
-	affectedPlayer addCards: (Deck getRandomCards: 1).
+CardDealer >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyCardDealerOn: aPlayer.
 ]

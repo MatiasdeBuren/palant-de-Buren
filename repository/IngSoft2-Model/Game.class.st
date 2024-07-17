@@ -13,7 +13,8 @@ Class {
 		'players',
 		'turnHolder',
 		'lastEffect',
-		'lastCard'
+		'lastCard',
+		'effectManager'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -30,7 +31,6 @@ Game >> calculateMaxFuel [
 	maxFuel := 0.
 	dice do: [ :x | maxFuel := maxFuel + x getMax ].
 	maxFuel := maxFuel * 2.
-	Transcript show: 'yes'.
 	^ maxFuel
 ]
 
@@ -107,7 +107,8 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 		players add: ((Player
 				  named: x asString
 				  withShip: (Ship withFuel: self calculateMaxFuel)) addCards:
-				 (Deck getRandomCards: 2)) ]
+				 (Deck getRandomCards: 2)) ].
+	effectManager := EffectManager withPlayers: players withBoard: aBoard.
 ]
 
 { #category : #action }
@@ -118,8 +119,8 @@ Game >> playTurn: player [
 		rollRes := player play: dice.
 		self checkBounty: rollRes for: player.
 		thisEffect := board move: player distance: rollRes.
-		thisEffect initializePlayers: players initializeBoard: board. 
-		thisEffect applyEffect: player.
+		"thisEffect initializePlayers: players initializeBoard: board."
+		thisEffect applyEffectWithManager: effectManager triggeredBy: player.
 		lastEffect := thisEffect ]
 ]
 

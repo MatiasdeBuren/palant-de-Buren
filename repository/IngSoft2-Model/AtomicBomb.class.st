@@ -5,8 +5,6 @@ Class {
 }
 
 { #category : #application }
-AtomicBomb >> applyEffect: affectedPlayer [
-
-	players do: [ :aPlayer |
-		aPlayer ship getGravity > 0 ifFalse: [ board resetToStart: aPlayer ] ]
+AtomicBomb >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyAtomicBomb.
 ]

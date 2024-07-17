@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #application }
-NullEffect >> applyEffect: affectedPlayer [
-	^ true
+NullEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	^true
 ]
