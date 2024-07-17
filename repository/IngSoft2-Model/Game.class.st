@@ -30,6 +30,7 @@ Game >> calculateMaxFuel [
 	maxFuel := 0.
 	dice do: [ :x | maxFuel := maxFuel + x getMax ].
 	maxFuel := maxFuel * 2.
+	Transcript show: 'yes'.
 	^ maxFuel
 ]
 
