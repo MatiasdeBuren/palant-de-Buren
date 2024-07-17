@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'players',
-		'board'
+		'board',
+		'lastEffect'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -31,7 +32,7 @@ EffectManager >> applyCardDealerOn: aPlayer [
 
 { #category : #'as yet unclassified' }
 EffectManager >> applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessaryRolledResult [
-	aPlayer ship setGravity: necessaryRolledResult
+	aPlayer ship setGravity: necessaryRolledResult.
 ]
 
 { #category : #'as yet unclassified' }
@@ -42,11 +43,8 @@ EffectManager >> applyHyperJumpOn: aPlayer withCycleDistance: distanceList [
 ]
 
 { #category : #'as yet unclassified' }
-EffectManager >> applyMoonWalkWithDistance: someDistance TriggeredBy: immunePlayer [
-	players do: [ :aPlayer |
-		immunePlayer = aPlayer ifFalse: [
-			aPlayer ship getGravity > 0 ifFalse: [
-				board move: aPlayer distance: someDistance * -1 ] ] ]
+EffectManager >> applyLastEffectTriggeredBy: targetPlayer [
+	lastEffect applyEffectWithManager: self triggeredBy: targetPlayer.
 ]
 
 { #category : #'as yet unclassified' }
@@ -67,4 +65,9 @@ EffectManager >> applyWormOn: aPlayer withLink: linkPosition [
 EffectManager >> initializePlayers: somePlayers initializeBoard: aBoard [
 players := somePlayers.
 board := aBoard.
+]
+
+{ #category : #initialization }
+EffectManager >> setLastEffect: anEffect [
+	lastEffect := anEffect.
 ]

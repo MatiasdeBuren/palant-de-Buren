@@ -3,10 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'targetPlayer',
-		'targetCard',
-		'lastEffect',
-		'lastCard',
-		'board'
+		'targetCard'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -17,8 +14,8 @@ Card class >> canBeUsedAnytime [
 ]
 
 { #category : #'as yet unclassified' }
-Card class >> withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard withLastEffect: lastEffect withLastCard: lastCard withBoard: aBoard [
-	^(self new) initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard initializeLastEffect: lastEffect initializeLastCard: lastCard initializeBoard: aBoard.
+Card class >> withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard [
+	^(self new) initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard.
 ]
 
 { #category : #initialization }
@@ -27,11 +24,8 @@ Card >> applyCardEffect [
 ]
 
 { #category : #initialization }
-Card >> initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard initializeLastEffect: anEffect initializeLastCard: aLastCard initializeBoard: aBoard [
+Card >> initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard [ 
 	targetPlayer := aTargetPlayer.
 	targetCard := aTargetCard.
-	lastEffect := anEffect.
-	lastCard := aLastCard.
-	board := aBoard.
 	
 ]
