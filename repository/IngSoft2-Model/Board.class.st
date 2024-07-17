@@ -43,7 +43,7 @@ Board >> getParsecs [
 	^parsecs.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Board >> getSquares [
 	^squares.
 ]

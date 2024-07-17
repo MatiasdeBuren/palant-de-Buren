@@ -13,13 +13,13 @@ CardManager class >> withEffectManager: anEffectManager [
 	^(self new) initializeEffectManager: anEffectManager. 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyAccelerationOn: targetPlayer [
 	targetPlayer do: [ :player | player activateCard: Acceleration].
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 	cardUser setAlly: targetPlayer.
 	cardUser activateCard: Ally.
@@ -27,19 +27,19 @@ CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 	targetPlayer activateCard: Ally.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyCancellationOn: targetPlayer with: targetCard [
 	targetPlayer deactivateCard: targetCard.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyOverloadOn: targetPlayer [
 	targetPlayer activateCard: Overload.
 	
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyRedoOn: targetPlayer with: targetCard [
 	lastCard isNil ifFalse: [
 		(lastCard
@@ -49,7 +49,7 @@ CardManager >> applyRedoOn: targetPlayer with: targetCard [
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardManager >> applyRepeatOn: targetPlayer [
 	effectManager applyLastEffectTriggeredBy: targetPlayer.
 ]
@@ -61,7 +61,7 @@ CardManager >> initializeEffectManager: anEffectManager [
 	
 ]
 
-{ #category : #initialization }
+{ #category : #getsAndSets }
 CardManager >> setLastCard: aCard [
 	lastCard := aCard.
 ]
