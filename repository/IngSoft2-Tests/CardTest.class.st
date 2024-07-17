@@ -500,8 +500,6 @@ CardTest >> test18RepeatCardSetsGravityLevelToTargetPlayerWhenLastEffectIsHyperG
 	aPlayer addCards: (OrderedCollection with: Repeat).
 	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
 	aGame giveTurn: bPlayer.
-	aGame playTurn: bPlayer.
-	aGame playTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 5.
 ]
 
