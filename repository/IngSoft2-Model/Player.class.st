@@ -113,11 +113,6 @@ Player >> ship [
 ]
 
 { #category : #accessing }
-Player >> useCard: aCard [
-	aCard applyCardEffect: self.
-]
-
-{ #category : #accessing }
 Player >> useCard: aCard with: aCardManager [
 	aCard applyCardEffect: self with: aCardManager.
 ]
