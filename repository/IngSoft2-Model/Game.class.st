@@ -14,7 +14,8 @@ Class {
 		'turnHolder',
 		'lastEffect',
 		'lastCard',
-		'effectManager'
+		'effectManager',
+		'cardManager'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -109,6 +110,7 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 				  withShip: (Ship withFuel: self calculateMaxFuel)) addCards:
 				 (Deck getRandomCards: 2)) ].
 	effectManager := EffectManager withPlayers: players withBoard: aBoard.
+	cardManager  := CardManager withEffectManager: effectManager.
 ]
 
 { #category : #action }
@@ -121,21 +123,23 @@ Game >> playTurn: player [
 		thisEffect := board move: player distance: rollRes.
 		"thisEffect initializePlayers: players initializeBoard: board."
 		thisEffect applyEffectWithManager: effectManager triggeredBy: player.
-		lastEffect := thisEffect ]
+		lastEffect := thisEffect.
+		effectManager setLastEffect: thisEffect ]
 ]
 
 { #category : #action }
 Game >> player: aPlayer throwsCard: aCard targetPlayer: aTargetPlayer targetCard: aTargetCard [
 
-	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard)) ifTrue: [
-		aPlayer useCard: (aCard
-				 withTargetPlayer: aTargetPlayer
-				 withTargetCard: aTargetCard
-				 withLastEffect: lastEffect
-				 withLastCard: lastCard
-				 withBoard: board).
-		aPlayer removeCard: aCard ].
-	aCard = Redo ifFalse: [ lastCard := aCard ]
+	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard))
+		ifTrue: [
+			aPlayer
+				useCard:
+				(aCard withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard)
+				with: cardManager.
+			aPlayer removeCard: aCard ].
+	aCard = Redo ifFalse: [
+		lastCard := aCard.
+		cardManager setLastCard: aCard ]
 ]
 
 { #category : #action }

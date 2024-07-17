@@ -13,13 +13,6 @@ Redo class >> canBeUsedConsidering: lastCard [
 ]
 
 { #category : #initialization }
-Redo >> applyCardEffect: cardUser [
-
-	lastCard isNil ifFalse: [
-		(lastCard
-			 withTargetPlayer: targetPlayer
-			 withTargetCard: targetCard
-			 withLastEffect: lastEffect
-			 withLastCard: lastCard
-			 withBoard: board) applyCardEffect: cardUser ]
+Redo >> applyCardEffect: cardUser with: aCardManager [
+	aCardManager applyRedoOn: targetPlayer with: targetCard.
 ]
