@@ -418,3 +418,156 @@ CardTest >> test14RedoCardCanBeThrownMultipleTimesInARow [
 
 
 ]
+
+{ #category : #tests }
+CardTest >> test15RepeatCardMovesTargetShipForwardWhenLastEffectIsHyperJump [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (HyperJump withUnits: (OrderedCollection with: (Parsec withUnits: 2)) withBoard: aLoadedBoard) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	self assert: (bPlayer ship getShipPosition) equals: 9.
+]
+
+{ #category : #tests }
+CardTest >> test16RepeatCardMovesAllShipsToStartWhenLastEffectIsAtomicBomb [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (AtomicBomb new) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	self assert: (bPlayer ship getShipPosition) equals: 1.
+	self assert: (aPlayer ship getShipPosition) equals: 1.
+]
+
+{ #category : #tests }
+CardTest >> test17RepeatCardGivesAnotherCardToTargetPlayerWhenLastEffectIsCardDealer [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (CardDealer new) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	self assert: (bPlayer getCards size) equals: 3.
+]
+
+{ #category : #tests }
+CardTest >> test18RepeatCardSetsGravityLevelToTargetPlayerWhenLastEffectIsHyperGravity [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (HyperGravity withNecessaryRolledResult: 4) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	self assert: (bPlayer ship getShipPosition) equals: 5.
+]
+
+{ #category : #tests }
+CardTest >> test19RepeatCardMovesAllOtherShipsButThrowerBackwardsWhenLastEffectIsMoonWalk [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (MoonWalk withDistance: 1) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aLoadedBoard place: cPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: aPlayer targetCard: nil.
+	self assert: (bPlayer ship getShipPosition) equals: 3.
+	self assert: (cPlayer ship getShipPosition) equals: 3.
+]
+
+{ #category : #tests }
+CardTest >> test20RepeatCardMovesTargetPlayerWhenLastEffectIsWormEffect [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (WormEffect withLink: 19) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	self assert: (bPlayer ship getShipPosition) equals: 19.
+]
+
+{ #category : #tests }
+CardTest >> test21RepeatCardDoesNotAffectPlayersWhenLastEffectIsNullEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 10  withDice: someDice ).
+	aLoadedBoard initializeEffect: (NullEffect new) initializeAt: 10.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aLoadedBoard place: cPlayer at: 5.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: aPlayer throwsCard: Repeat targetPlayer: aPlayer targetCard: nil.
+	self assert: (aPlayer ship getShipPosition) equals: 10.
+	self assert: (bPlayer ship getShipPosition) equals: 5.
+	self assert: (cPlayer ship getShipPosition) equals: 5.
+]
