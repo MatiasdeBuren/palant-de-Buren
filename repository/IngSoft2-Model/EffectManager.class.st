@@ -48,14 +48,6 @@ EffectManager >> applyLastEffectTriggeredBy: targetPlayer [
 ]
 
 { #category : #'as yet unclassified' }
-EffectManager >> applyMoonWalkWithDistance: someDistance TriggeredBy: immunePlayer [
-	players do: [ :aPlayer |
-		immunePlayer = aPlayer ifFalse: [
-			aPlayer ship getGravity > 0 ifFalse: [
-				board move: aPlayer distance: someDistance * -1 ] ] ]
-]
-
-{ #category : #'as yet unclassified' }
 EffectManager >> applyMoonWalkWithDistance: someDistance triggeredBy: immunePlayer [
 	players do: [ :aPlayer |
 		immunePlayer = aPlayer ifFalse: [
