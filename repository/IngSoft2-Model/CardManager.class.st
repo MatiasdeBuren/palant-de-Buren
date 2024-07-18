@@ -23,7 +23,7 @@ CardManager >> applyAccelerationOn: targetPlayer [
 CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 	cardUser setAlly: targetPlayer.
 	cardUser activateCard: Ally.
-	targetPlayer setAlly: targetPlayer.
+	targetPlayer setAlly: cardUser.
 	targetPlayer activateCard: Ally.
 ]
 
@@ -41,12 +41,20 @@ CardManager >> applyOverloadOn: targetPlayer [
 
 { #category : #action }
 CardManager >> applyRedoOn: targetPlayer with: targetCard [
-	lastCard isNil ifFalse: [
-		(lastCard
-			 withTargetPlayer: targetPlayer
-			 withTargetCard: targetCard) applyCardEffect: targetPlayer with: self]
-	
-	
+
+	lastCard ifNotNil: [
+		(lastCard withTargetPlayer: targetPlayer withTargetCard: targetCard)
+			applyCardEffect: targetPlayer
+			with: self ]
+]
+
+{ #category : #action }
+CardManager >> applyRedoOn: targetPlayer with: targetCard usedBy: cardUser [
+
+	lastCard ifNotNil: [
+		(lastCard withTargetPlayer: targetPlayer withTargetCard: targetCard)
+			applyCardEffect: cardUser
+			with: self ]
 ]
 
 { #category : #action }

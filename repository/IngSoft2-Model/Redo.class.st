@@ -14,5 +14,5 @@ Redo class >> canBeUsedConsidering: lastCard [
 
 { #category : #initialization }
 Redo >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyRedoOn: targetPlayer with: targetCard.
+	aCardManager applyRedoOn: targetPlayer with: targetCard usedBy: cardUser.
 ]

@@ -330,7 +330,7 @@ CardTest >> test11CancellationCardCanRemoveAllyEfect [
 ]
 
 { #category : #tests }
-CardTest >> test12RedoCardCopiesLastCard [
+CardTest >> test12RedoCardCopiesRepeat [
 	|aPlayer bPlayer someDice aLoadedBoard aGame |
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -568,4 +568,95 @@ CardTest >> test21RepeatCardDoesNotAffectPlayersWhenLastEffectIsNullEffect [
 	self assert: (aPlayer ship getShipPosition) equals: 10.
 	self assert: (bPlayer ship getShipPosition) equals: 5.
 	self assert: (cPlayer ship getShipPosition) equals: 5.
+]
+
+{ #category : #tests }
+CardTest >> test22RedoCardCopiesOverload [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
+	aLoadedBoard removeEffects.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aPlayer addCards: (OrderedCollection with: Overload).
+	bPlayer addCards: (OrderedCollection with: Redo).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Overload targetPlayer: bPlayer targetCard: nil.
+	aGame skipTurn: aPlayer. "FOR FUEL"
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self assert: (aPlayer ship getShipPosition) equals: 13.
+
+
+
+]
+
+{ #category : #tests }
+CardTest >> test23RedoCardCopiesAlly [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
+	aLoadedBoard removeEffects.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aLoadedBoard place: cPlayer at: 5.
+	aPlayer addCards: (OrderedCollection with: Ally).
+	bPlayer addCards: (OrderedCollection with: Redo).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame skipTurn: aPlayer. "FOR FUEL"
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Redo targetPlayer: cPlayer targetCard: nil.
+	self assert: (cPlayer getAlly) equals: bPlayer.
+
+
+
+]
+
+{ #category : #tests }
+CardTest >> test24RedoCardCopiesAcceleration [
+	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
+	aLoadedBoard removeEffects.
+
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aPlayer addCards: (OrderedCollection with: Acceleration).
+	bPlayer addCards: (OrderedCollection with: Redo).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Acceleration targetPlayer: aGame getPlayers targetCard: nil.
+	aGame skipTurn: aPlayer. "FOR FUEL"
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Redo targetPlayer: aGame getPlayers targetCard: nil.
+	aGame playTurn: bPlayer.
+	self assert: (bPlayer ship getShipPosition) equals: 12.
+
+
 ]
