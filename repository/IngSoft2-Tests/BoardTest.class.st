@@ -105,3 +105,15 @@ BoardTest >> test09BoardSizeCanBeExpressedWithLightYears [
 	aBoard := Board withSize: 30 withWorms: false withUnits: (LightYear withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	self assert: aBoard getParsecs equals: 1.
 ]
+
+{ #category : #tests }
+BoardTest >> test10BoardSizeCanMoveAShipSomeParsecAmount [
+
+	|aBoard aPlayer aShip|
+	aBoard := Board withSize: 30 withWorms: false withUnits: (Parsec withUnits: 30) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aShip := Ship withFuel: 10000.
+	aPlayer := Player named: 'Test' withShip: aShip.
+	aBoard place: aPlayer at: 1.
+	aBoard move: aPlayer jumping: 1.
+	self assert: aPlayer ship getShipPosition equals: 2.
+]
