@@ -12,7 +12,6 @@ Class {
 		'maxLaps',
 		'players',
 		'turnHolder',
-		'lastEffect',
 		'lastCard',
 		'effectManager',
 		'cardManager'
@@ -104,7 +103,6 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 	dice := someDice.
 	players := OrderedCollection new.
 	lastCard := nil.
-	lastEffect := NullEffect new.
 	(1 to: playerAmount) do: [ :x |
 		players add: ((Player
 				  named: x asString
@@ -122,9 +120,7 @@ Game >> playTurn: player [
 	rollRes := player play: dice.
 	self checkBounty: rollRes for: player.
 	thisEffect := board move: player distance: rollRes.
-	thisEffect applyEffectWithManager: effectManager triggeredBy: player.
-	lastEffect := thisEffect.
-	effectManager setLastEffect: thisEffect
+	effectManager trigger: thisEffect by: player.
 ]
 
 { #category : #action }

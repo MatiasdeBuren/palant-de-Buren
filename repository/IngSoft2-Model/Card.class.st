@@ -19,7 +19,7 @@ Card class >> withTarget: aTarget withCardUser: aCardUser [
 ]
 
 { #category : #initialization }
-Card >> applyCardEffect [
+Card >> applyCardEffectWith: aCardManager [
 	self subclassResponsibility.
 ]
 

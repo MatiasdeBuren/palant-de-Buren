@@ -14,38 +14,38 @@ EffectManager class >> withPlayers: somePlayers withBoard: aBoard [
 	^(self new) initializePlayers:  somePlayers initializeBoard: aBoard 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyAtomicBomb [
 	players do: [ :aPlayer |
 		aPlayer ship getGravity > 0 ifFalse: [ board resetToStart: aPlayer ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyBlackWholeOn: aPlayer [
 	board move: (aPlayer) distance: -4
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyCardDealerOn: aPlayer [
 	aPlayer addCards: (Deck getRandomCards: 1).
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessaryRolledResult [
 	aPlayer ship setGravity: necessaryRolledResult.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyHyperJumpOn: aPlayer withCycleDistance: someParsecs [
 	board move: aPlayer jumping: someParsecs.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyLastEffectTriggeredBy: targetPlayer [
 	lastEffect applyEffectWithManager: self triggeredBy: targetPlayer.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyMoonWalkWithDistance: someDistance triggeredBy: immunePlayer [
 	players do: [ :aPlayer |
 		immunePlayer = aPlayer ifFalse: [
@@ -53,7 +53,7 @@ EffectManager >> applyMoonWalkWithDistance: someDistance triggeredBy: immunePlay
 				board move: aPlayer distance: someDistance * -1 ] ] ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> applyWormOn: aPlayer withLink: linkPosition [
 	board takeOut: aPlayer.
 	board place: aPlayer at: linkPosition
@@ -61,11 +61,13 @@ EffectManager >> applyWormOn: aPlayer withLink: linkPosition [
 
 { #category : #initialization }
 EffectManager >> initializePlayers: somePlayers initializeBoard: aBoard [
-players := somePlayers.
-board := aBoard.
+	players := somePlayers.
+	board := aBoard.
+	lastEffect := NullEffect new.
 ]
 
-{ #category : #initialization }
-EffectManager >> setLastEffect: anEffect [
+{ #category : #'as yet unclassified' }
+EffectManager >> trigger: anEffect by: aPlayer [
+	anEffect applyEffectWithManager: self triggeredBy: aPlayer.
 	lastEffect := anEffect.
 ]

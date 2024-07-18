@@ -131,7 +131,7 @@ Board >> move: aPlayer distance: aDistance [
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 Board >> move: aPlayer jumping: someParsecs [
 	self move: aPlayer distance: (someParsecs * (self boardSize / parsecs)) truncated.
 ]

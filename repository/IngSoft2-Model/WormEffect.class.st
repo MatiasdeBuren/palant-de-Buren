@@ -12,7 +12,7 @@ WormEffect class >> withLink: linkPos [
 	^(self new) initializeLink: linkPos.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 WormEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyWormOn: aPlayer withLink: linkPosition
 ]
