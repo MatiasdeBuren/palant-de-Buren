@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-LightYear >> parseToSquares: aSize parsecAmount: anAmount [
-	^(1/3)*(distanceUnits * (aSize/anAmount)) truncated.
+LightYear >> valueAsParsec [
+	^(distanceUnits / 3).
 ]

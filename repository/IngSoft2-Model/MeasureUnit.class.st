@@ -16,3 +16,8 @@ MeasureUnit class >> withUnits: someUnits [
 MeasureUnit >> initializeUnits: someUnits [
 	distanceUnits:=someUnits 
 ]
+
+{ #category : #'as yet unclassified' }
+MeasureUnit >> valueAsParsec [
+	self subclassResponsibility
+]

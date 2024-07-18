@@ -12,9 +12,9 @@ Class {
 }
 
 { #category : #'instance creation' }
-Board class >> withSize: aSize withWorms: hasWorms withParsecs: someParsecs withDice: someDice [
+Board class >> withSize: aSize withWorms: hasWorms withUnits: someParsecs withDice: someDice [
 	|boardToReturn|
-	boardToReturn := ((self new) initializeSize: aSize initializeParsecs: someParsecs).
+	boardToReturn := ((self new) initializeSize: aSize initializeParsecs: someParsecs valueAsParsec).
 	boardToReturn initializeRandomEffects: someDice.
 	(hasWorms) ifTrue: [boardToReturn initializeWormSquares].
 	^boardToReturn.
@@ -81,7 +81,7 @@ Board >> initializeRandomEffects: someDice [
 			|unitList|
 			unitList := OrderedCollection with: (LightYear withUnits: 2) with:(Parsec withUnits: 1) with: (LightYear withUnits: 1).
 			square initializeWithEffect:
-				(HyperJump withUnits: unitList withBoard: self)
+				(HyperJump withUnits: unitList)
 				].
 
 		probabilityScore > 98 ifTrue: [
@@ -129,6 +129,11 @@ Board >> move: aPlayer distance: aDistance [
 					  ^NullEffect new.
 					 ].
 	
+]
+
+{ #category : #'as yet unclassified' }
+Board >> move: aPlayer jumping: someParsecs [
+	self move: aPlayer distance: (someParsecs * (self boardSize / parsecs)) truncated.
 ]
 
 { #category : #action }

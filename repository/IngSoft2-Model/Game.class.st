@@ -48,12 +48,13 @@ Game >> canPlay: aPlayer [
 
 { #category : #action }
 Game >> checkBounty: rollRes for: player [
+
 	| prob |
-	(rollRes = (self calculateMaxFuel / 2)) ifTrue: [
-		prob := 100 atRandom.
-		prob > 20
-			ifTrue: [ player ship addFuelCapacity: 1 ]
-			ifFalse: [ player ship addFuelCapacity: -1 ] ]
+	rollRes = (self calculateMaxFuel / 2) ifFalse: [ ^ self ].
+	prob := 100 atRandom.
+	prob > 20
+		ifTrue: [ player ship addFuelCapacity: 1 ]
+		ifFalse: [ player ship addFuelCapacity: -1 ]
 ]
 
 { #category : #action }

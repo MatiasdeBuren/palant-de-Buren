@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-Parsec >> parseToSquares: aSize parsecAmount: anAmount [
-	^(distanceUnits * (aSize/anAmount )) truncated.
+Parsec >> valueAsParsec [
+	^distanceUnits.
 ]

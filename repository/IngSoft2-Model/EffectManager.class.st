@@ -36,10 +36,8 @@ EffectManager >> applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessa
 ]
 
 { #category : #'as yet unclassified' }
-EffectManager >> applyHyperJumpOn: aPlayer withCycleDistance: distanceList [
-	board
-		move: aPlayer
-		distance: distanceList
+EffectManager >> applyHyperJumpOn: aPlayer withCycleDistance: someParsecs [
+	board move: aPlayer jumping: someParsecs.
 ]
 
 { #category : #'as yet unclassified' }

@@ -34,7 +34,7 @@ Player >> deactivateCard: aCard [
 	activeCards remove: aCard.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Player >> getActiveCards [
 	^activeCards.
 ]
@@ -44,7 +44,7 @@ Player >> getAlly [
 	^ally.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Player >> getCards [
 	^cards.
 ]

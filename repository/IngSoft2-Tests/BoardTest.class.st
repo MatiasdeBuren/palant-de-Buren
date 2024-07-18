@@ -14,7 +14,7 @@ BoardTest >> should: aErrorBlock raise: anErrorClass withMessage: anErrorMessage
 BoardTest >> test01BoardIsCreatedWithNSquares [
 	|aBoard aBoardSize|
 	aBoardSize := 4.
-	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	self assert: aBoard boardSize equals: aBoardSize.
 ]
 
@@ -24,7 +24,7 @@ BoardTest >> test02BoardCanPlaceShip [
 	aBoardSize := 4.
 	aShip := Ship withFuel: 1000.
 	Transcript show: 2 // 5.
-	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 1 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 1) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 3.
 	self assert: (aShip getShipPosition = 3).
@@ -34,7 +34,7 @@ BoardTest >> test02BoardCanPlaceShip [
 BoardTest >> test03BoardCanMoveShip [
 	|aBoard aBoardSize aShip aPlayer|
 	aBoardSize := 10.
-	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aShip := Ship withFuel: 1000.
 	aPlayer := Player named: 'Pepe' withShip: aShip. 
 	aBoard place: aPlayer at: 1. 
@@ -48,7 +48,7 @@ BoardTest >> test04TakeOutReturnsTrueWhenShipGetsRemoved [
 	aBoardSize := 4.
 
 	aShip := Ship withFuel: 1000.
-	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 3.
 	aBoard takeOut: aPlayer.
@@ -60,7 +60,7 @@ BoardTest >> test05ValidWhenShipGetsResetToStart [
 
 	|aShip aBoard aPlayer|
 	aShip := Ship withFuel: 1000.
-	aBoard := Board withSize: 100 withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: 100 withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 5.
 	aBoard resetToStart: aPlayer.
@@ -70,7 +70,7 @@ BoardTest >> test05ValidWhenShipGetsResetToStart [
 { #category : #tests }
 BoardTest >> test06BoardCanMoveShipBackwards [
 	|aShip aBoard aPlayer|
-	aBoard := Board withSize: 10 withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: 10 withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aShip := Ship withFuel: 1000.
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 5.
@@ -82,7 +82,7 @@ BoardTest >> test06BoardCanMoveShipBackwards [
 BoardTest >> test07ShipsCanExceedBoardGoingBackwards [ 
 	|aBoard aBoardSize aShip aPlayer|
 	aBoardSize := 10.
-	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 3 withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aShip := Ship withFuel: 1000.
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 1. 
@@ -94,6 +94,14 @@ BoardTest >> test07ShipsCanExceedBoardGoingBackwards [
 BoardTest >> test08BoardSizeCanBeExpressedWithParsecs [
 
 	|aBoard|
-	aBoard := Board withSize: 10 withWorms: false withParsecs: 5 withDice: (OrderedCollection with: (LoadedDie of: 3)).
-	self assert: aBoard getParsecs equals: 5.
+	aBoard := Board withSize: 10 withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	self assert: aBoard getParsecs equals: 3.
+]
+
+{ #category : #tests }
+BoardTest >> test09BoardSizeCanBeExpressedWithLightYears [
+
+	|aBoard|
+	aBoard := Board withSize: 30 withWorms: false withUnits: (LightYear withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	self assert: aBoard getParsecs equals: 1.
 ]

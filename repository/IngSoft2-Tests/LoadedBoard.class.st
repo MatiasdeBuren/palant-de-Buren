@@ -98,6 +98,11 @@ LoadedBoard >> move: aPlayer distance: aDistance [
 	
 ]
 
+{ #category : #'as yet unclassified' }
+LoadedBoard >> move: aPlayer jumping: someParsecs [
+	self move: aPlayer distance: (someParsecs * (self boardSize / parsecs)) truncated.
+]
+
 { #category : #initialization }
 LoadedBoard >> place: aPlayer at: aPosition [
 

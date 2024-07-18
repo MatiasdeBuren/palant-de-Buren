@@ -18,7 +18,7 @@ GameTest >> test01ValidGameCanFinish [
 	aBoard := LoadedBoard clone: (Board
 			           withSize: 10
 			           withWorms: false
-			           withParsecs: 3
+			           withUnits: (Parsec withUnits: 3)
 			           withDice: someDice).
 	aBoard removeEffects.
 	game := Game
@@ -46,7 +46,7 @@ GameTest >> test01ValidGameCanFinish [
 GameTest >> test02GameCanGetRankingAndOrdersShipsCorrectly [
 	|aGame aBoard someDice players|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
-	aBoard := Board withSize: 30 withWorms: false withParsecs: 3 withDice: someDice.
+	aBoard := Board withSize: 30 withWorms: false withUnits: (Parsec withUnits: 1) withDice: someDice.
 	aGame := Game withBoard: aBoard withDice: someDice  withPlayers: 3 withMaxLaps: 10.
 	players := aGame getPlayers.
 	aBoard place: (players at: 1) at: 3.
@@ -64,7 +64,7 @@ GameTest >> test03PlayerStartsGameWithSomeAmountOfCards [
 	aLoadedBoard := LoadedBoard clone: (Board
 			                 withSize: 20
 			                 withWorms: false
-			                 withParsecs: 1
+			                 withUnits: (Parsec withUnits: 1)
 			                 withDice: someDice).
 	aLoadedBoard removeEffects.
 	aGame := Game
