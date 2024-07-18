@@ -16,6 +16,7 @@ CardManager class >> withEffectManager: anEffectManager [
 { #category : #action }
 CardManager >> applyAccelerationOn: targetPlayer [
 	targetPlayer do: [ :player | player activateCard: Acceleration].
+	lastCard := Acceleration
 	
 ]
 
@@ -25,16 +26,19 @@ CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 	cardUser activateCard: Ally.
 	targetPlayer setAlly: cardUser.
 	targetPlayer activateCard: Ally.
+	lastCard := Ally.
 ]
 
 { #category : #action }
 CardManager >> applyCancellationOn: targetCard [
 	targetCard deactivateCard.
+	lastCard := Cancellation 
 ]
 
 { #category : #action }
 CardManager >> applyOverloadOn: targetPlayer [
 	targetPlayer activateCard: Overload.
+	lastCard := Overload.
 	
 	
 ]
@@ -44,12 +48,13 @@ CardManager >> applyRedoOn: aTargetPlayer usedBy: aCardUser [
 
 	lastCard ifNotNil: [
 		(lastCard withTarget: aTargetPlayer withCardUser: aCardUser)
-			applyCardEffectWith: self ]
+			applyCardEffectWith: self ].
 ]
 
 { #category : #action }
 CardManager >> applyRepeatOn: targetPlayer [
 	effectManager applyLastEffectTriggeredBy: targetPlayer.
+	lastCard := Repeat.
 ]
 
 { #category : #initialization }
@@ -57,9 +62,4 @@ CardManager >> initializeEffectManager: anEffectManager [
 	effectManager := anEffectManager.
 	lastCard := nil.
 	
-]
-
-{ #category : #getsAndSets }
-CardManager >> setLastCard: aCard [
-	lastCard := aCard.
 ]

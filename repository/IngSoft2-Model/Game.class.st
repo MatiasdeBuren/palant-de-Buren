@@ -138,7 +138,6 @@ Game >> player: aPlayer throwsCard: aCard targetting: aTarget [
 			aPlayer removeCard: aCard ].
 	aCard = Redo ifTrue: [ ^ self ].
 	lastCard := aCard.
-	cardManager setLastCard: aCard
 ]
 
 { #category : #action }
