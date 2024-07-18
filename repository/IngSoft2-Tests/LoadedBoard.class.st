@@ -125,21 +125,6 @@ LoadedBoard >> resetToStart: aPlayer [
 ]
 
 { #category : #initialization }
-LoadedBoard >> showBoard [
-
-	| dockedHere |
-	squares do: [ :square |
-		square getDockedShips isEmpty
-			ifTrue: [ Transcript show: '#' ]
-			ifFalse: [
-				square getDockedShips do: [ :thisShip |
-					Transcript show: thisShip getName ].
-				Transcript show: '.' ] ].
-	Transcript
-		show: ''.
-]
-
-{ #category : #initialization }
 LoadedBoard >> takeOut: aPlayer [
 
 	| shipPosition |

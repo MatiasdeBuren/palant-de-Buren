@@ -134,16 +134,16 @@ Board >> move: aPlayer distance: aDistance [
 { #category : #action }
 Board >> place: aPlayer at: aPosition [
 
-	| moveTo |
+	| moveTo lapsToAdd |
 	moveTo := aPosition.
-	[ moveTo > self boardSize ] whileTrue: [
-		aPlayer ship addLaps: 1.
-		moveTo := moveTo - self boardSize ].
-	[ moveTo <= 0 ] whileTrue: [
-		aPlayer ship addLaps: -1.
-		moveTo := moveTo + self boardSize ].
+	lapsToAdd := moveTo // self boardSize.
+	moveTo > 0
+		          ifTrue: [moveTo := moveTo - (lapsToAdd * self boardSize) ]
+		          ifFalse: [moveTo := self boardSize + moveTo + ((lapsToAdd + 1) abs * self boardSize) ].
+	aPlayer ship addLaps: lapsToAdd.
+	moveTo = 0 ifTrue: [ moveTo := self boardSize ].
 	aPlayer ship setShipPosition: moveTo.
-	^ (squares at: moveTo) dockShip: aPlayer ship.
+	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 
 { #category : #'modifier state' }

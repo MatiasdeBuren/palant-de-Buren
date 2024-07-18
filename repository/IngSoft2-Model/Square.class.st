@@ -22,12 +22,12 @@ Square >> dockShip: aShip [
 	^myEffect.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Square >> getDockedShips [
 	^dockedShips.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Square >> getEffect [
 	^myEffect.
 ]

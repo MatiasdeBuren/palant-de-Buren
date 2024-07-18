@@ -23,6 +23,7 @@ BoardTest >> test02BoardCanPlaceShip [
 	|aBoard aBoardSize aShip aPlayer|
 	aBoardSize := 4.
 	aShip := Ship withFuel: 1000.
+	Transcript show: 2 // 5.
 	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 1 withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 3.
@@ -86,7 +87,7 @@ BoardTest >> test07ShipsCanExceedBoardGoingBackwards [
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 1. 
 	aBoard move: aPlayer distance: -3.
-	self assert: (aShip getShipPosition = 8).
+	self assert: aShip getShipPosition equals: 8.
 ]
 
 { #category : #tests }

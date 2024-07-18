@@ -87,11 +87,11 @@ ShipTest >> test06ShipsLapsIncreseWhenItGoesPastEndSquare [
 { #category : #tests }
 ShipTest >> test07ShipsLapsReduceWhenExceedsBoardGoingBackwards [
 	|aBoard aBoardSize aPlayer|
-	aBoardSize := 10.
+	aBoardSize := 5.
 	aBoard := Board withSize: aBoardSize withWorms: false withParsecs: 1 withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 1000).
-	aBoard place: aPlayer at: 1. 
-	aBoard move: aPlayer distance: -5.
-	aPlayer ship addLaps: 2.
-	self assert: (aPlayer ship getLaps ) equals: 1.
+	aBoard place: aPlayer at: 1.
+	aPlayer ship addLaps: 5.
+	aBoard move: aPlayer distance: -11.
+	self assert: (aPlayer ship getLaps) equals: 3.
 ]
