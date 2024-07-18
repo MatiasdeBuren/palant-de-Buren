@@ -28,8 +28,8 @@ CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 ]
 
 { #category : #action }
-CardManager >> applyCancellationOn: targetPlayer with: targetCard [
-	targetPlayer deactivateCard: targetCard.
+CardManager >> applyCancellationOn: targetCard [
+	targetCard deactivateCard.
 ]
 
 { #category : #action }
@@ -40,12 +40,11 @@ CardManager >> applyOverloadOn: targetPlayer [
 ]
 
 { #category : #action }
-CardManager >> applyRedoOn: targetPlayer with: targetCard usedBy: cardUser [
+CardManager >> applyRedoOn: aTargetPlayer usedBy: aCardUser [
 
 	lastCard ifNotNil: [
-		(lastCard withTargetPlayer: targetPlayer withTargetCard: targetCard)
-			applyCardEffect: cardUser
-			with: self ]
+		(lastCard withTarget: aTargetPlayer withCardUser: aCardUser)
+			applyCardEffectWith: self ]
 ]
 
 { #category : #action }

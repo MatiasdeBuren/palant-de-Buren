@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #initialization }
-Cancellation >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyCancellationOn: targetPlayer with: targetCard.
+Cancellation >> applyCardEffectWith: aCardManager [
+	aCardManager applyCancellationOn: target.
 ]

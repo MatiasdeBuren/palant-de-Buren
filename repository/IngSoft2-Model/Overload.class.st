@@ -15,6 +15,11 @@ Overload class >> removeCardEffect: aCard fromCards: someCardList fromPlayer: aP
 ]
 
 { #category : #initialization }
-Overload >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyOverloadOn: targetPlayer.
+Overload >> applyCardEffectWith: aCardManager [
+	aCardManager applyOverloadOn: target.
+]
+
+{ #category : #initialization }
+Overload >> deactivateCard [ 
+	target deactivateCard: self class
 ]

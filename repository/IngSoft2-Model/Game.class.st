@@ -116,25 +116,24 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 { #category : #action }
 Game >> playTurn: player [
 
-	turnHolder = player ifTrue: [
-		| rollRes thisEffect |
-		rollRes := player play: dice.
-		self checkBounty: rollRes for: player.
-		thisEffect := board move: player distance: rollRes.
-		"thisEffect initializePlayers: players initializeBoard: board."
-		thisEffect applyEffectWithManager: effectManager triggeredBy: player.
-		lastEffect := thisEffect.
-		effectManager setLastEffect: thisEffect ]
+	| rollRes thisEffect |
+	turnHolder = player ifFalse: [ ^ self ].
+	rollRes := player play: dice.
+	self checkBounty: rollRes for: player.
+	thisEffect := board move: player distance: rollRes.
+	thisEffect applyEffectWithManager: effectManager triggeredBy: player.
+	lastEffect := thisEffect.
+	effectManager setLastEffect: thisEffect
 ]
 
 { #category : #action }
-Game >> player: aPlayer throwsCard: aCard targetPlayer: aTargetPlayer targetCard: aTargetCard [
+Game >> player: aPlayer throwsCard: aCard targetting: aTarget [
 
 	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard))
 		ifTrue: [
 			aPlayer
 				useCard:
-				(aCard withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard)
+				(aCard withTarget: aTarget withCardUser: aPlayer)
 				with: cardManager.
 			aPlayer removeCard: aCard ].
 	aCard = Redo ifTrue: [ ^ self ].

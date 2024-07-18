@@ -23,7 +23,7 @@ CardTest >> test01PlayerCanUseInstantCardsAnytime [
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aGame giveTurn: bPlayer.
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 1.
 
 
@@ -60,10 +60,10 @@ CardTest >> test02PlayerCanOnlyUsePermanentCardOnHisTurn [
 	aPlayer addCards: (OrderedCollection with: Ally).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: bPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	self deny: (aPlayer getAlly) equals: bPlayer.
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	self assert: (aPlayer getAlly) equals: bPlayer.
 	
 
@@ -100,7 +100,7 @@ CardTest >> test03RepeatCardMovesTargetShipBackwarsWhenLastEffectIsBlackHole [
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 1. 
 ]
 
@@ -121,7 +121,7 @@ CardTest >> test04AccelerationIncreasesAllPlayersThrow [
 	aPlayer addCards: (OrderedCollection with: Acceleration).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Acceleration targetPlayer: (aGame getPlayers) targetCard: nil.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
 	aGame playTurn: aPlayer.
 	aGame giveTurn: bPlayer.
 	aGame playTurn: bPlayer.
@@ -149,11 +149,10 @@ CardTest >> test05OverloadReducesPlayersThrow [
 	aPlayer addCards: (OrderedCollection with: Overload).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Overload targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Overload targetting: bPlayer.
 	aGame giveTurn: bPlayer.
 	aGame playTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 8.
-
 
 
 ]
@@ -181,9 +180,9 @@ CardTest >> test06AllyCardSetsAnAlly [
 	aLoadedBoard place: aPlayer at: 5.
 	aLoadedBoard place: bPlayer at: 5.
 	
-	aPlayer addCards: (OrderedCollection with: (Ally)).	
+	aPlayer addCards: (OrderedCollection with: Ally).	
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	aGame playTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aGame playTurn: aPlayer.
@@ -210,7 +209,7 @@ CardTest >> test07AllyCardLeavesActiveCardInPlayer [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	self assert: (aPlayer getActiveCards size) equals: 1.
 
 
@@ -236,7 +235,7 @@ CardTest >> test08AllyCardAndItsEffectCanBeRemovedFromPlayer [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	aPlayer deactivateCard: Ally.
 	self assert: (aPlayer getActiveCards size) equals: 0.
 
@@ -246,7 +245,7 @@ CardTest >> test08AllyCardAndItsEffectCanBeRemovedFromPlayer [
 
 { #category : #tests }
 CardTest >> test09CancellationCanRemoveAccelerationCard [
-	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	|aPlayer bPlayer someDice aLoadedBoard aGame cardPlayed|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
@@ -262,9 +261,10 @@ CardTest >> test09CancellationCanRemoveAccelerationCard [
 	bPlayer addCards: (OrderedCollection with: Cancellation).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Acceleration targetPlayer: (aGame getPlayers) targetCard: nil.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Cancellation targetPlayer: bPlayer targetCard: Acceleration.
+	cardPlayed := Acceleration withTarget: aGame getPlayers withCardUser: aPlayer.
+	aGame player: bPlayer throwsCard: Cancellation targetting: cardPlayed.
 	aGame playTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 10.
 
@@ -274,7 +274,7 @@ CardTest >> test09CancellationCanRemoveAccelerationCard [
 
 { #category : #tests }
 CardTest >> test10CancellationCanRemoveOverloadCard [
-	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	|aPlayer bPlayer someDice aLoadedBoard aGame cardPlayed|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
@@ -290,9 +290,10 @@ CardTest >> test10CancellationCanRemoveOverloadCard [
 	bPlayer addCards: (OrderedCollection with: Cancellation).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Overload targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Overload targetting: bPlayer.
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Cancellation targetPlayer: bPlayer targetCard: Overload.
+	cardPlayed := Overload withTarget: bPlayer withCardUser: aPlayer.
+	aGame player: bPlayer throwsCard: Cancellation targetting: cardPlayed.
 	aGame playTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 10.
 
@@ -302,7 +303,7 @@ CardTest >> test10CancellationCanRemoveOverloadCard [
 
 { #category : #tests }
 CardTest >> test11CancellationCardCanRemoveAllyEfect [
-	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	|aPlayer bPlayer someDice aLoadedBoard aGame cardPlayed|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
@@ -320,12 +321,13 @@ CardTest >> test11CancellationCardCanRemoveAllyEfect [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
-	aGame player: bPlayer throwsCard: Cancellation targetPlayer: aPlayer targetCard: Ally.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
+	cardPlayed := Ally withTarget: bPlayer withCardUser: aPlayer.
+	aGame player: bPlayer throwsCard: Cancellation targetting: cardPlayed.
 	
 	self assert: (aPlayer getActiveCards size) equals: 0.
-
-
+	self assert: (aPlayer getAlly) equals: nil.
+	self assert: (bPlayer getAlly) equals: nil.
 
 ]
 
@@ -349,9 +351,9 @@ CardTest >> test12RedoCardCopiesRepeat [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	aGame skipTurn: aPlayer. 'FOR FUEL'.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	self assert: (aPlayer ship getShipPosition) equals: 2.
 
 
@@ -375,7 +377,7 @@ CardTest >> test13RedoCardDoesNothingIfNoCardsWereUsed [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	self assert: (aPlayer ship getShipPosition) equals: 10.
 	self assert: (bPlayer ship getShipPosition) equals: 5.
 
@@ -402,17 +404,17 @@ CardTest >> test14RedoCardCanBeThrownMultipleTimesInARow [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	aGame skipTurn: aPlayer. 'FOR FUEL'.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	aGame giveTurn: aPlayer.
 	aGame skipTurn: aPlayer. 'FOR FUEL'.
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	aGame giveTurn: aPlayer.
 	aGame skipTurn: aPlayer. 'FOR FUEL'.
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	self assert: (aPlayer ship getShipPosition) equals: 14.
 
 
@@ -435,7 +437,7 @@ CardTest >> test15RepeatCardMovesTargetShipForwardWhenLastEffectIsHyperJump [
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 9.
 ]
 
@@ -457,7 +459,7 @@ CardTest >> test16RepeatCardMovesAllShipsToStartWhenLastEffectIsAtomicBomb [
 	aPlayer addCards: (OrderedCollection with: Repeat).
 	aLoadedBoard place: aPlayer at: 5.
 	aLoadedBoard place: bPlayer at: 5.
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 1.
 	self assert: (aPlayer ship getShipPosition) equals: 1.
 ]
@@ -478,7 +480,7 @@ CardTest >> test17RepeatCardGivesAnotherCardToTargetPlayerWhenLastEffectIsCardDe
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer getCards size) equals: 3.
 ]
 
@@ -498,13 +500,13 @@ CardTest >> test18RepeatCardSetsGravityLevelToTargetPlayerWhenLastEffectIsHyperG
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	aGame giveTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 5.
 ]
 
 { #category : #tests }
-CardTest >> test19RepeatCardMovesAllOtherShipsButThrowerBackwardsWhenLastEffectIsMoonWalk [
+CardTest >> test19RepeatCardMovesAllOtherShipsButTargetBackwardsWhenLastEffectIsMoonWalk [
 	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame |
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -521,9 +523,12 @@ CardTest >> test19RepeatCardMovesAllOtherShipsButThrowerBackwardsWhenLastEffectI
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: aPlayer targetCard: nil.
-	self assert: (bPlayer ship getShipPosition) equals: 3.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	self assert: (bPlayer ship getShipPosition) equals: 4.
 	self assert: (cPlayer ship getShipPosition) equals: 3.
+	self assert: (aPlayer ship getShipPosition) equals: 9.
+	
+
 ]
 
 { #category : #tests }
@@ -542,7 +547,7 @@ CardTest >> test20RepeatCardMovesTargetPlayerWhenLastEffectIsWormEffect [
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 19.
 ]
 
@@ -564,7 +569,7 @@ CardTest >> test21RepeatCardDoesNotAffectPlayersWhenLastEffectIsNullEffect [
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetPlayer: aPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (aPlayer ship getShipPosition) equals: 10.
 	self assert: (bPlayer ship getShipPosition) equals: 5.
 	self assert: (cPlayer ship getShipPosition) equals: 5.
@@ -589,10 +594,10 @@ CardTest >> test22RedoCardCopiesOverload [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Overload targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Overload targetting: bPlayer.
 	aGame skipTurn: aPlayer. "FOR FUEL"
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aPlayer.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
 	self assert: (aPlayer ship getShipPosition) equals: 13.
@@ -622,10 +627,10 @@ CardTest >> test23RedoCardCopiesAlly [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Ally targetPlayer: bPlayer targetCard: nil.
+	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
 	aGame skipTurn: aPlayer. "FOR FUEL"
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: cPlayer targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: cPlayer.
 	self assert: (cPlayer getAlly) equals: bPlayer.
 
 
@@ -651,10 +656,10 @@ CardTest >> test24RedoCardCopiesAcceleration [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Acceleration targetPlayer: aGame getPlayers targetCard: nil.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
 	aGame skipTurn: aPlayer. "FOR FUEL"
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: aGame getPlayers targetCard: nil.
+	aGame player: bPlayer throwsCard: Redo targetting: aGame getPlayers.
 	aGame playTurn: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 12.
 
@@ -663,7 +668,7 @@ CardTest >> test24RedoCardCopiesAcceleration [
 
 { #category : #tests }
 CardTest >> test25RedoCardCopiesCancellation [
-	|aPlayer bPlayer someDice aLoadedBoard aGame |
+	|aPlayer bPlayer someDice aLoadedBoard aGame cardPlayed|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
@@ -680,12 +685,13 @@ CardTest >> test25RedoCardCopiesCancellation [
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aGame player: aPlayer throwsCard: Acceleration targetPlayer: aGame getPlayers targetCard: nil.
-	aGame player: aPlayer throwsCard: Acceleration targetPlayer: aGame getPlayers targetCard: nil.
-	aGame player: aPlayer throwsCard: Cancellation targetPlayer: bPlayer targetCard: Acceleration.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
+	cardPlayed := Acceleration withTarget: aGame getPlayers withCardUser: aPlayer.
+	aGame player: aPlayer throwsCard: Cancellation targetting: cardPlayed.
 	aGame skipTurn: aPlayer. "FOR FUEL"
 	aGame giveTurn: bPlayer.
-	aGame player: bPlayer throwsCard: Redo targetPlayer: bPlayer targetCard: Acceleration.
+	aGame player: bPlayer throwsCard: Redo targetting: cardPlayed.
 	self assert: (bPlayer getActiveCards size) equals: 0.
 	
 

@@ -31,7 +31,7 @@ Player >> addCards: someCards [
 
 { #category : #accessing }
 Player >> deactivateCard: aCard [
-	aCard removeCardEffect: aCard fromCards: activeCards fromPlayer: self.
+	activeCards remove: aCard.
 ]
 
 { #category : #getsAndSets }
@@ -83,6 +83,11 @@ Player >> play: someDice [
 	^ 0
 ]
 
+{ #category : #removing }
+Player >> removeAlly [
+	ally := nil.
+]
+
 { #category : #accessing }
 Player >> removeCard: aCard [
 
@@ -114,5 +119,5 @@ Player >> ship [
 
 { #category : #accessing }
 Player >> useCard: aCard with: aCardManager [
-	aCard applyCardEffect: self with: aCardManager.
+	aCard applyCardEffectWith: aCardManager.
 ]

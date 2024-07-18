@@ -2,8 +2,8 @@ Class {
 	#name : #Card,
 	#superclass : #Object,
 	#instVars : [
-		'targetPlayer',
-		'targetCard'
+		'target',
+		'cardUser'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -14,8 +14,8 @@ Card class >> canBeUsedAnytime [
 ]
 
 { #category : #'as yet unclassified' }
-Card class >> withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard [
-	^(self new) initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard.
+Card class >> withTarget: aTarget withCardUser: aCardUser [
+	^(self new) initializeTarget: aTarget initializeCardUser: aCardUser.
 ]
 
 { #category : #initialization }
@@ -24,8 +24,13 @@ Card >> applyCardEffect [
 ]
 
 { #category : #initialization }
-Card >> initializeTargetPlayer: aTargetPlayer initializeTargetCard: aTargetCard [ 
-	targetPlayer := aTargetPlayer.
-	targetCard := aTargetCard.
+Card >> deactivateCard [
+	self subclassResponsibility.
+]
+
+{ #category : #initialization }
+Card >> initializeTarget: aTarget initializeCardUser: aCardUser [
+	target := aTarget.
+	cardUser := aCardUser.
 	
 ]

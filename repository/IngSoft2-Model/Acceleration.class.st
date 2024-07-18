@@ -15,6 +15,11 @@ Acceleration class >> removeCardEffect: aCard fromCards: someCardList fromPlayer
 ]
 
 { #category : #action }
-Acceleration >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyAccelerationOn: targetPlayer.
+Acceleration >> applyCardEffectWith: aCardManager [
+	aCardManager applyAccelerationOn: target.
+]
+
+{ #category : #action }
+Acceleration >> deactivateCard [ 
+	target do: [ :aTarget | aTarget deactivateCard: self class].
 ]
