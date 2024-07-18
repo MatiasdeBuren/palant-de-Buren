@@ -40,15 +40,6 @@ CardManager >> applyOverloadOn: targetPlayer [
 ]
 
 { #category : #action }
-CardManager >> applyRedoOn: targetPlayer with: targetCard [
-
-	lastCard ifNotNil: [
-		(lastCard withTargetPlayer: targetPlayer withTargetCard: targetCard)
-			applyCardEffect: targetPlayer
-			with: self ]
-]
-
-{ #category : #action }
 CardManager >> applyRedoOn: targetPlayer with: targetCard usedBy: cardUser [
 
 	lastCard ifNotNil: [
