@@ -119,6 +119,6 @@ PlayerTest >> test08PlayerCantUseCardThatHeDoesNotHave [
 	aLoadedBoard place: aPlayer at: 5.
 	
 	aGame giveTurn: aPlayer.
-	self should: [ aGame player: aPlayer throwsCard: Ally targetPlayer: aPlayer targetCard: nil ] raise: Error withMessage: 'Player does not have such card.'. 
+	self should: [ aGame player: aPlayer throwsCard: Ally targetting: aPlayer ] raise: Error withMessage: 'Player does not have such card.'. 
 	 
 ]

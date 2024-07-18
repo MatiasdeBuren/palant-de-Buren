@@ -13,8 +13,3 @@ PermanentCard class >> affectRollResult [
 PermanentCard class >> canBeUsedConsidering: lastCard [
 	^false.
 ]
-
-{ #category : #'as yet unclassified' }
-PermanentCard class >> removeCardEffect: aCard from: aCardList [
-	self subclassResponsibility.
-]
