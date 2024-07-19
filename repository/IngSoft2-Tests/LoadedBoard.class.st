@@ -31,6 +31,11 @@ LoadedBoard >> canReach: aPlayer distance: aDistance [
 	^ true
 ]
 
+{ #category : #'as yet unclassified' }
+LoadedBoard >> changeEffectOf: targetSquare [
+	squares do: [ :square | (square = targetSquare) ifTrue: square revertEffect].
+]
+
 { #category : #initialization }
 LoadedBoard >> copyBoard: aBoard [
 	squares := aBoard getSquares.
@@ -55,6 +60,11 @@ LoadedBoard >> findWormSquares [
 { #category : #initialization }
 LoadedBoard >> getParsecs [
 	^parsecs.
+]
+
+{ #category : #'as yet unclassified' }
+LoadedBoard >> getSquares [ 
+	^squares.
 ]
 
 { #category : #initialization }

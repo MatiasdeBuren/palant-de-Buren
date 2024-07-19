@@ -57,6 +57,12 @@ CardManager >> applyRepeatOn: targetPlayer [
 	lastCard := Repeat.
 ]
 
+{ #category : #action }
+CardManager >> applyReversalOn: targetSquare [
+	effectManager revertEffectOf: targetSquare.
+	lastCard := Reversal.
+]
+
 { #category : #initialization }
 CardManager >> initializeEffectManager: anEffectManager [
 	effectManager := anEffectManager.

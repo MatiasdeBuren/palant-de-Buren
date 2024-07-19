@@ -38,12 +38,17 @@ Board >> canReach: aPlayer distance: aDistance [
 	^ true
 ]
 
-{ #category : #getsAndSets }
+{ #category : #'as yet unclassified' }
+Board >> changeEffectOf: targetSquare [
+	squares do: [ :square | (square = targetSquare) ifTrue: square revertEffect].
+]
+
+{ #category : #testing }
 Board >> getParsecs [
 	^parsecs.
 ]
 
-{ #category : #testing }
+{ #category : #'as yet unclassified' }
 Board >> getSquares [
 	^squares.
 ]

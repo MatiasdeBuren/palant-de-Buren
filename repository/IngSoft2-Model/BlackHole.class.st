@@ -6,5 +6,10 @@ Class {
 
 { #category : #application }
 BlackHole >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
-	anEffectManager applyBlackWholeOn: aPlayer.
+	anEffectManager applyBlackHoleOn: aPlayer.
+]
+
+{ #category : #'as yet unclassified' }
+BlackHole >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyReverseBlackHoleOn: aPlayer.
 ]

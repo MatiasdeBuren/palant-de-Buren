@@ -98,6 +98,11 @@ Player >> removeCard: aCard [
 	Error signal: 'Player does not have such card.'. 
 ]
 
+{ #category : #removing }
+Player >> removeRandomCard [
+	cards removeAt: (cards size atRandom).
+]
+
 { #category : #accessing }
 Player >> rollDice: someDice [
 	| result |

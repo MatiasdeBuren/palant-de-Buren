@@ -21,7 +21,7 @@ EffectManager >> applyAtomicBomb [
 ]
 
 { #category : #action }
-EffectManager >> applyBlackWholeOn: aPlayer [
+EffectManager >> applyBlackHoleOn: aPlayer [
 	board move: (aPlayer) distance: -4
 ]
 
@@ -54,6 +54,29 @@ EffectManager >> applyMoonWalkWithDistance: someDistance triggeredBy: immunePlay
 ]
 
 { #category : #action }
+EffectManager >> applyReverseBlackHoleOn: aPlayer [
+	board move: (aPlayer) distance: 4
+]
+
+{ #category : #action }
+EffectManager >> applyReverseCardDealerOn: aPlayer [
+	aPlayer removeRandomCard.
+]
+
+{ #category : #action }
+EffectManager >> applyReverseHyperJumpOn: aPlayer withCycleDistance: someParsecs [
+	board move: aPlayer jumping: someParsecs * (-1).
+]
+
+{ #category : #action }
+EffectManager >> applyReverseMoonWalkWithDistance: someDistance triggeredBy: immunePlayer [
+	players do: [ :aPlayer |
+		immunePlayer = aPlayer ifFalse: [
+			aPlayer ship getGravity > 0 ifFalse: [
+				board move: aPlayer distance: someDistance ] ] ]
+]
+
+{ #category : #action }
 EffectManager >> applyWormOn: aPlayer withLink: linkPosition [
 	board takeOut: aPlayer.
 	board place: aPlayer at: linkPosition
@@ -64,6 +87,11 @@ EffectManager >> initializePlayers: somePlayers initializeBoard: aBoard [
 	players := somePlayers.
 	board := aBoard.
 	lastEffect := NullEffect new.
+]
+
+{ #category : #'as yet unclassified' }
+EffectManager >> revertEffectOf: targetSquare [
+	board changeEffectOf: targetSquare.
 ]
 
 { #category : #'as yet unclassified' }

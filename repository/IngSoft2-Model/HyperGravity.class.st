@@ -17,6 +17,11 @@ HyperGravity >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessaryRolledResult.
 ]
 
+{ #category : #'as yet unclassified' }
+HyperGravity >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyHyperGravityOn: aPlayer withNecessaryRolledResult: necessaryRolledResult.
+]
+
 { #category : #initialization }
 HyperGravity >> initializeNecesaryRolledResult: aResult [
 necessaryRolledResult := aResult.

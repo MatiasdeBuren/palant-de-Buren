@@ -8,3 +8,8 @@ Class {
 Effect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	self subclassResponsibility 
 ]
+
+{ #category : #'as yet unclassified' }
+Effect >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	self subclassResponsibility 
+]
