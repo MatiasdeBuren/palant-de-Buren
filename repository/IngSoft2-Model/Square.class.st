@@ -16,6 +16,11 @@ Square class >> createEmptySquare [
 	^(self new) initializeWithEffect: NullEffect new.
 ]
 
+{ #category : #accessing }
+Square >> deactivateCard: aCard [
+	myEffect := myEffect reverseBack.
+]
+
 { #category : #initialization }
 Square >> dockShip: aShip [
 	dockedShips add: aShip.

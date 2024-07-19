@@ -17,7 +17,17 @@ ReverseEffectWrapper >> applyEffectWithManager: anEffectManager triggeredBy: aPl
 	effectToRevert applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer
 ]
 
+{ #category : #application }
+ReverseEffectWrapper >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	effectToRevert applyEffectWithManager: anEffectManager triggeredBy: aPlayer.
+]
+
 { #category : #initialization }
 ReverseEffectWrapper >> initializeEffectToRevert: anEffect [
 	effectToRevert := anEffect.
+]
+
+{ #category : #'as yet unclassified' }
+ReverseEffectWrapper >> reverseBack [
+	^effectToRevert.
 ]

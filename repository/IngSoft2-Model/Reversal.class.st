@@ -1,6 +1,6 @@
 Class {
 	#name : #Reversal,
-	#superclass : #InstantCard,
+	#superclass : #PermanentCard,
 	#category : #'IngSoft2-Model'
 }
 

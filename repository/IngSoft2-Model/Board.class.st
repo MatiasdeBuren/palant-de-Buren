@@ -40,7 +40,7 @@ Board >> canReach: aPlayer distance: aDistance [
 
 { #category : #'as yet unclassified' }
 Board >> changeEffectOf: targetSquare [
-	squares do: [ :square | (square = targetSquare) ifTrue: square revertEffect].
+	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
 ]
 
 { #category : #testing }
