@@ -119,9 +119,10 @@ LoadedBoard >> place: aPlayer at: aPosition [
 	| moveTo lapsToAdd |
 	moveTo := aPosition.
 	lapsToAdd := moveTo // self boardSize.
-	moveTo > 0
-		          ifTrue: [moveTo := moveTo - (lapsToAdd * self boardSize) ]
-		          ifFalse: [moveTo := self boardSize + moveTo + ((lapsToAdd + 1) abs * self boardSize) ].
+	moveTo > 0 ifTrue: [ moveTo := moveTo - (lapsToAdd * self boardSize) ].
+	moveTo < 0 ifTrue: [
+		moveTo := self boardSize + moveTo
+		          + ((lapsToAdd + 1) abs * self boardSize) ].
 	aPlayer ship addLaps: lapsToAdd.
 	moveTo = 0 ifTrue: [ moveTo := self boardSize ].
 	aPlayer ship setShipPosition: moveTo.

@@ -1041,3 +1041,144 @@ CardTest >> test38RepeatCardCopiesReverseCardDealerEffect [
 	self assert: bPlayer getCards size equals: 1.
 
 ]
+
+{ #category : #tests }
+CardTest >> test39RepeatCardCopiesReverseHyperGravityEffectButStillHasSameEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (HyperGravity withNecessaryRolledResult: 4) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal with: Repeat).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	self assert: bPlayer ship getShipPosition equals: 3.
+
+]
+
+{ #category : #tests }
+CardTest >> test40RepeatCardCopiesReverseHyperJumpEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 15)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (HyperJump withUnits: (OrderedCollection with: (Parsec withUnits: 1))) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal with: Repeat).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	self assert: bPlayer ship getShipPosition equals: 5.
+
+]
+
+{ #category : #tests }
+CardTest >> test41RepeatCardCopiesReverseMoonWalkEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 15)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (MoonWalk withDistance: 6) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal with: Repeat).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	self assert: bPlayer ship getShipPosition equals: 9.
+
+]
+
+{ #category : #tests }
+CardTest >> test42RepeatCardCopiesReverseNullEffectButStillHasNoEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: NullEffect new initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal with: Repeat).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	self assert: aPlayer ship getShipPosition equals: 6.
+	self assert: bPlayer ship getShipPosition equals: 3.
+	self assert: cPlayer ship getShipPosition equals: 3.
+
+]
+
+{ #category : #tests }
+CardTest >> test43RepeatCardCopiesReverseWormHoleEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (WormEffect with: 6 withLink: 12) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	
+	bPlayer ship addLaps: 2.
+	
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal with: Repeat).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
+	aGame playTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	self assert: bPlayer ship getShipPosition equals: 12.
+	self assert: bPlayer ship getLaps equals: 1.
+
+]
