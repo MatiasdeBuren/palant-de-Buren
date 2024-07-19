@@ -109,8 +109,8 @@ Board >> initializeWormSquares [
 	worm2Position := (self boardSize) atRandom.
 	[ worm1Position = worm2Position ] whileTrue: [
 		worm2Position := (self boardSize) atRandom ].
-	worm1 := WormEffect withLink: worm2Position.
-	worm2 := WormEffect withLink: worm1Position.
+	worm1 := WormEffect with:worm1Position withLink: worm2Position.
+	worm2 := WormEffect with:worm1Position withLink: worm1Position.
 	(squares at: worm1Position) initializeWithEffect: worm1. 
 	(squares at: worm2Position) initializeWithEffect: worm2.
 ]

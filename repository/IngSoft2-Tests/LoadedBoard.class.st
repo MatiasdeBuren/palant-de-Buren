@@ -81,8 +81,8 @@ LoadedBoard >> initializeWormSquares [
 	worm2Position := (self boardSize) atRandom.
 	[ worm1Position = worm2Position ] whileTrue: [
 		worm2Position := (self boardSize) atRandom ].
-	worm1 := WormEffect withLink: worm2Position.
-	worm2 := WormEffect withLink: worm1Position.
+	worm1 := WormEffect with:worm1Position withLink: worm2Position.
+	worm2 := WormEffect with:worm2Position withLink: worm1Position.
 	(squares at: worm1Position) initializeWithEffect: worm1. 
 	(squares at: worm2Position) initializeWithEffect: worm2.
 ]
@@ -116,16 +116,16 @@ LoadedBoard >> move: aPlayer jumping: someParsecs [
 { #category : #initialization }
 LoadedBoard >> place: aPlayer at: aPosition [
 
-	| moveTo |
+	| moveTo lapsToAdd |
 	moveTo := aPosition.
-	[ moveTo > self boardSize ] whileTrue: [
-		aPlayer ship addLaps: 1.
-		moveTo := moveTo - self boardSize ].
-	[ moveTo <= 0 ] whileTrue: [
-		aPlayer ship addLaps: -1.
-		moveTo := moveTo + self boardSize ].
+	lapsToAdd := moveTo // self boardSize.
+	moveTo > 0
+		          ifTrue: [moveTo := moveTo - (lapsToAdd * self boardSize) ]
+		          ifFalse: [moveTo := self boardSize + moveTo + ((lapsToAdd + 1) abs * self boardSize) ].
+	aPlayer ship addLaps: lapsToAdd.
+	moveTo = 0 ifTrue: [ moveTo := self boardSize ].
 	aPlayer ship setShipPosition: moveTo.
-	^ (squares at: moveTo) dockShip: aPlayer ship.
+	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 
 { #category : #initialization }

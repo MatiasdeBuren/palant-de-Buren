@@ -537,7 +537,7 @@ CardTest >> test20RepeatCardMovesTargetPlayerWhenLastEffectIsWormEffect [
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
-	aLoadedBoard initializeEffect: (WormEffect withLink: 19) initializeAt: 10.
+	aLoadedBoard initializeEffect: (WormEffect with:10 withLink: 19) initializeAt: 10.
 
 	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
 	aPlayer := aGame getPlayers at: 1.
@@ -546,9 +546,12 @@ CardTest >> test20RepeatCardMovesTargetPlayerWhenLastEffectIsWormEffect [
 	aLoadedBoard place: bPlayer at: 5.
 	aGame giveTurn: aPlayer.
 	aGame playTurn: aPlayer.
-	aPlayer addCards: (OrderedCollection with: Repeat).
-	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
+	self assert: (aPlayer ship getShipPosition) equals: 19.
+	self assert: (aPlayer ship getLaps) equals: 0.
+	bPlayer addCards: (OrderedCollection with: Repeat).
+	aGame player: bPlayer throwsCard: Repeat targetting: bPlayer.
 	self assert: (bPlayer ship getShipPosition) equals: 19.
+	self assert: (bPlayer ship getLaps) equals: 0.
 ]
 
 { #category : #tests }
@@ -840,6 +843,62 @@ CardTest >> test31ReversalCardInvertsHyperJumpEffect [
 	aGame playTurn: aPlayer.
 	self assert: bPlayer ship getShipPosition equals: 8.
 	self assert: cPlayer ship getShipPosition equals: 8.
+	
+
+]
+
+{ #category : #tests }
+CardTest >> test32ReversalCardInvertsWormHoleEffectThatGoesBackwards [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (WormEffect with: 10 withLink: 7) initializeAt: 10.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 5.
+	aLoadedBoard place: bPlayer at: 5.
+	aLoadedBoard place: cPlayer at: 5.
+	aPlayer addCards: (OrderedCollection with: Reversal).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 10).
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getShipPosition equals: 7.
+	self assert: aPlayer ship getLaps equals: 1.
+	
+
+]
+
+{ #category : #tests }
+CardTest >> test33ReversalCardInvertsWormHoleEffectThatGoesFoward [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (WormEffect with: 6 withLink: 9) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal).
+	'--------------------------------------------------------------------------'.
+	aPlayer ship addLaps:3.
+	self assert: aPlayer ship getLaps equals: 3.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 3).
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getLaps equals: 2.
+	self assert: aPlayer ship getShipPosition equals: 9.
 	
 
 ]

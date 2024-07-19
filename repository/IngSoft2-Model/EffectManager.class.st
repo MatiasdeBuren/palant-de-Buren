@@ -77,9 +77,23 @@ EffectManager >> applyReverseMoonWalkWithDistance: someDistance triggeredBy: imm
 ]
 
 { #category : #action }
+EffectManager >> applyReverseWormOn: aPlayer withLink: linkPosition with: myPosition [
+	self checkLapsToAdd: linkPosition - myPosition for: aPlayer.
+	board place: aPlayer at: linkPosition
+]
+
+{ #category : #action }
 EffectManager >> applyWormOn: aPlayer withLink: linkPosition [
 	board takeOut: aPlayer.
 	board place: aPlayer at: linkPosition
+]
+
+{ #category : #adding }
+EffectManager >> checkLapsToAdd: distance for: aPlayer [
+
+	distance > 0
+		ifTrue: [ aPlayer ship addLaps: -1 ]
+		ifFalse:[ aPlayer ship addLaps: 1 ].
 ]
 
 { #category : #initialization }
