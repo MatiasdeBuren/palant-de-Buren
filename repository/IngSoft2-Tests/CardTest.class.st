@@ -821,7 +821,7 @@ CardTest >> test30ReversalCardInvertsHyperJumpEffect [
 ]
 
 { #category : #tests }
-CardTest >> test31ReversalCardInvertsHyperJumpEffect [
+CardTest >> test31ReversalCardInvertsMoonWalkEffect [
 	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -899,6 +899,64 @@ CardTest >> test33ReversalCardInvertsWormHoleEffectThatGoesFoward [
 	aGame playTurn: aPlayer.
 	self assert: aPlayer ship getLaps equals: 2.
 	self assert: aPlayer ship getShipPosition equals: 9.
+	
+
+]
+
+{ #category : #tests }
+CardTest >> test34ReversalCardInvertsNullEffectButStillHasNoEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: NullEffect new initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal).
+	'--------------------------------------------------------------------------'.
+	aPlayer ship addLaps:3.
+	self assert: aPlayer ship getLaps equals: 3.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 3).
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getShipPosition equals: 6.
+	
+
+]
+
+{ #category : #tests }
+CardTest >> test35ReversalCardInvertsHyperGravityEffectButStillHasSameEffect [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 3).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: (HyperGravity withNecessaryRolledResult: 4) initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 3.
+	aLoadedBoard place: bPlayer at: 3.
+	aLoadedBoard place: cPlayer at: 3.
+	aPlayer addCards: (OrderedCollection with: Reversal).
+	'--------------------------------------------------------------------------'.
+	aPlayer ship addLaps:3.
+	self assert: aPlayer ship getLaps equals: 3.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 3).
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getShipPosition equals: 6.
 	
 
 ]
