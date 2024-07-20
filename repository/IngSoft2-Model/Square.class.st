@@ -44,7 +44,7 @@ Square >> initializeWithEffect: anEffect [
 	dockedShips := OrderedCollection new
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 Square >> revertEffect [
 	myEffect := ReverseEffectWrapper withEffectToReverse: myEffect.
 ]

@@ -1291,8 +1291,6 @@ CardTest >> test47RedoCardAppliedOnInstantCardCanBeThrownAtAnytime [
 	bPlayer := aGame getPlayers at: 2.
 	cPlayer := aGame getPlayers at: 3.
 	
-	bPlayer ship addLaps: 2.
-	
 	aLoadedBoard place: aPlayer at: 1.
 	aLoadedBoard place: bPlayer at: 1.
 	aLoadedBoard place: cPlayer at: 1.
@@ -1304,6 +1302,38 @@ CardTest >> test47RedoCardAppliedOnInstantCardCanBeThrownAtAnytime [
 	aGame giveTurn: bPlayer.
 	aGame player: aPlayer throwsCard: Redo targetting: bPlayer.
 	self assert: bPlayer getCards size equals: 4.
+
+
+
+]
+
+{ #category : #tests }
+CardTest >> test48RedoCardAppliedOnPermanentCardCanOnlyBeThrownAtUsersTurn [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aLoadedBoard initializeEffect: CardDealer new initializeAt: 6.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aLoadedBoard place: cPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: Redo with: Acceleration).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
+	aGame giveTurn: bPlayer.
+	aGame player: aPlayer throwsCard: Redo targetting: aGame getPlayers.
+	self assert: bPlayer getActiveCards size equals: 1.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: Redo targetting: aGame getPlayers.
+	self assert: bPlayer getActiveCards size equals: 2.
 
 
 
