@@ -43,6 +43,15 @@ Board >> changeEffectOf: targetSquare [
 	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
 ]
 
+{ #category : #'as yet unclassified' }
+Board >> correctPosition: aPosition [
+	| positionToReturn |
+	positionToReturn := aPosition \\ self boardSize.
+	positionToReturn = 0 ifTrue: [^ self boardSize].
+	positionToReturn < 0 ifTrue: [^ positionToReturn + self boardSize].
+	^ positionToReturn.
+]
+
 { #category : #testing }
 Board >> getParsecs [
 	^parsecs.
@@ -145,14 +154,10 @@ Board >> move: aPlayer jumping: someParsecs [
 Board >> place: aPlayer at: aPosition [
 
 	| moveTo lapsToAdd |
-	moveTo := aPosition.
-	lapsToAdd := moveTo // self boardSize.
-	moveTo > 0
-		          ifTrue: [moveTo := moveTo - (lapsToAdd * self boardSize) ]
-		          ifFalse: [moveTo := self boardSize + moveTo + ((lapsToAdd + 1) abs * self boardSize) ].
-	aPlayer ship addLaps: lapsToAdd.
-	moveTo = 0 ifTrue: [ moveTo := self boardSize ].
+	lapsToAdd := aPosition // self boardSize.
+	moveTo := self correctPosition: aPosition.
 	aPlayer ship setShipPosition: moveTo.
+	aPlayer ship addLaps: lapsToAdd.
 	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 

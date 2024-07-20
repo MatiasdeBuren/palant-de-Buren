@@ -411,6 +411,7 @@ CardTest >> test14RedoCardCanBeThrownMultipleTimesInARow [
 	bPlayer := aGame getPlayers at: 2.
 	aLoadedBoard place: aPlayer at: 5.
 	aLoadedBoard place: bPlayer at: 5.
+	aPlayer ship addLaps: 5.
 	aPlayer addCards: (OrderedCollection with: Repeat).
 	bPlayer addCards: (OrderedCollection with: Redo with: Redo with: Redo).
 	'--------------------------------------------------------------------------'.

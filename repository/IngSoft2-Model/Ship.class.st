@@ -25,8 +25,12 @@ Ship >> addFuelCapacity: someExtraCapacity [
 ]
 
 { #category : #getsAndSets }
-Ship >> addLaps: lapAmount [ 
-	laps:= laps + lapAmount.
+Ship >> addLaps: lapAmount [
+
+	laps := laps + lapAmount.
+	laps < 0 ifFalse: [ ^ self ].
+	laps := 0.
+	position := 1
 ]
 
 { #category : #accessing }

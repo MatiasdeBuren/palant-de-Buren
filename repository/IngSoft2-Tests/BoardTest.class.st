@@ -85,6 +85,7 @@ BoardTest >> test07ShipsCanExceedBoardGoingBackwards [
 	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 3) withDice: (OrderedCollection with: (LoadedDie of: 3)).
 	aShip := Ship withFuel: 1000.
 	aPlayer := Player named: 'Pepe' withShip: aShip.
+	aPlayer ship addLaps: 1.
 	aBoard place: aPlayer at: 1. 
 	aBoard move: aPlayer distance: -3.
 	self assert: aShip getShipPosition equals: 8.
@@ -116,4 +117,17 @@ BoardTest >> test10BoardSizeCanMoveAShipSomeParsecAmount [
 	aBoard place: aPlayer at: 1.
 	aBoard move: aPlayer jumping: 1.
 	self assert: aPlayer ship getShipPosition equals: 2.
+]
+
+{ #category : #tests }
+BoardTest >> test11BoardMovesPlayerToStartIfItsLapCountWouldBeNegative [
+
+	|aBoard aPlayer aShip|
+	aBoard := Board withSize: 30 withWorms: false withUnits: (Parsec withUnits: 30) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aShip := Ship withFuel: 10000.
+	aPlayer := Player named: 'Test' withShip: aShip.
+	aBoard place: aPlayer at: 1.
+	aBoard move: aPlayer distance: -5.
+	self assert: aPlayer ship getShipPosition equals: 1.
+	self assert: aPlayer ship getLaps equals: 0.
 ]

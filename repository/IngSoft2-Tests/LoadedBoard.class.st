@@ -42,6 +42,15 @@ LoadedBoard >> copyBoard: aBoard [
 	parsecs := aBoard getParsecs.
 ]
 
+{ #category : #'as yet unclassified' }
+LoadedBoard >> correctPosition: aPosition [
+	| positionToReturn |
+	positionToReturn := aPosition \\ self boardSize.
+	positionToReturn = 0 ifTrue: [^ self boardSize].
+	positionToReturn < 0 ifTrue: [^ positionToReturn + self boardSize].
+	^ positionToReturn.
+]
+
 { #category : #accessing }
 LoadedBoard >> findSquareWithEffect: anEffect [
 	1 to: self boardSize do: [ :x | (((squares at: x) getEffect) class = anEffect) ifTrue:[ ^x] ].
@@ -117,15 +126,10 @@ LoadedBoard >> move: aPlayer jumping: someParsecs [
 LoadedBoard >> place: aPlayer at: aPosition [
 
 	| moveTo lapsToAdd |
-	moveTo := aPosition.
-	lapsToAdd := moveTo // self boardSize.
-	moveTo > 0 ifTrue: [ moveTo := moveTo - (lapsToAdd * self boardSize) ].
-	moveTo < 0 ifTrue: [
-		moveTo := self boardSize + moveTo
-		          + ((lapsToAdd + 1) abs * self boardSize) ].
-	aPlayer ship addLaps: lapsToAdd.
-	moveTo = 0 ifTrue: [ moveTo := self boardSize ].
+	lapsToAdd := aPosition // self boardSize.
+	moveTo := self correctPosition: aPosition.
 	aPlayer ship setShipPosition: moveTo.
+	aPlayer ship addLaps: lapsToAdd.
 	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 

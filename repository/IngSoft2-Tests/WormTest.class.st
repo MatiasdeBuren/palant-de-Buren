@@ -30,7 +30,7 @@ WormTest >> test02WormHolesTeleportShips [
 		         withPlayers: 2
 		         withMaxLaps: 100.
 	aPlayer := aGame getPlayers at: 1.
-
+	aPlayer ship addLaps: 5.
 	worms := aLoadedBoard findWormSquares.
 	aLoadedBoard place: aPlayer at: (worms at: 1) - 5.
 	aGame giveTurn: aPlayer.
