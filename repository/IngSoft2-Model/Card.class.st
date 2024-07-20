@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-Card class >> canBeUsedAnytime [
+Card class >> canBeUsedConsidering: lastCard [
 	self subclassResponsibility.
 ]
 

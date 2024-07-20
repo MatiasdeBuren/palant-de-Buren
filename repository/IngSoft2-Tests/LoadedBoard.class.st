@@ -22,11 +22,11 @@ LoadedBoard >> boardSize [
 LoadedBoard >> canReach: aPlayer distance: aDistance [
 	| missingFuel |
 	(aPlayer ship consumeFuel: aDistance) ifFalse: [
-		(aPlayer getAlly isNil) ifTrue: [^false].
-		missingFuel := aDistance - aPlayer getAlly ship getFuel.
-		(aPlayer getAlly ship consumeFuel: missingFuel) ifFalse: [
-			self resetToStart: aPlayer getAlly.
-			aPlayer getAlly penalize: 2.
+		(aPlayer getAlly isEmpty) ifTrue: [^false].
+		missingFuel := aDistance - (aPlayer getAlly at: 1) ship getFuel.
+		((aPlayer getAlly at: 1) ship consumeFuel: missingFuel) ifFalse: [
+			self resetToStart: (aPlayer getAlly at: 1).
+			(aPlayer getAlly at: 1) penalize: 2.
 			^ false ] ].
 	^ true
 ]

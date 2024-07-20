@@ -86,7 +86,8 @@ PlayerTest >> test06BothAlliesGetResetWhenTheyDontHaveEnoughCombinedFuel [
 	aBoard move: aPlayer distance: 14.
 	self assert: (aPlayer ship getShipPosition) equals: 1.
 	self assert: (bPlayer ship getShipPosition) equals: 1.
-	 
+	self assert: (aPlayer getPenalization) equals: 2.
+	self assert: (bPlayer getPenalization) equals: 2.
 ]
 
 { #category : #tests }
@@ -120,5 +121,17 @@ PlayerTest >> test08PlayerCantUseCardThatHeDoesNotHave [
 	
 	aGame giveTurn: aPlayer.
 	self should: [ aGame player: aPlayer throwsCard: Ally targetting: aPlayer ] raise: Error withMessage: 'Player does not have such card.'. 
+	 
+]
+
+{ #category : #tests }
+PlayerTest >> test09PlayerCardCanBeRemovedRandomly [
+	|aPlayer aCard bCard|
+	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 10).
+	aCard := Card new.
+	bCard := Card new.
+	aPlayer addCards: (OrderedCollection with: aCard with: bCard).
+	aPlayer removeRandomCard.
+	self assert: (aPlayer getCards size) equals: 1. 
 	 
 ]

@@ -4,6 +4,16 @@ Class {
 	#category : #'IngSoft2-Tests'
 }
 
+{ #category : #asserting }
+CardTest >> should: anErrorBlock raise: exceptionClass withMessage: anErrorMessage [
+
+    self
+        should: anErrorBlock
+        raise: exceptionClass
+        withExceptionDo: [ :error |
+        self assert: error messageText equals: anErrorMessage ]
+]
+
 { #category : #tests }
 CardTest >> test01PlayerCanUseInstantCardsAnytime [
 	|aPlayer bPlayer someDice aLoadedBoard aGame |
@@ -60,11 +70,10 @@ CardTest >> test02PlayerCanOnlyUsePermanentCardOnHisTurn [
 	aPlayer addCards: (OrderedCollection with: Ally).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: bPlayer.
-	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
-	self deny: (aPlayer getAlly) equals: bPlayer.
+	self should: [ aGame player: aPlayer throwsCard: Ally targetting: bPlayer. ] raise: Error withMessage: 'Permanent card can only be thrown during players turn'.
 	aGame giveTurn: aPlayer.
 	aGame player: aPlayer throwsCard: Ally targetting: bPlayer.
-	self assert: (aPlayer getAlly) equals: bPlayer.
+	self assert: (aPlayer getAlly at: 1) equals: bPlayer.
 	
 
 
@@ -188,6 +197,9 @@ CardTest >> test06AllyCardSetsAnAlly [
 	aGame playTurn: aPlayer.
 	self assert: aPlayer ship getShipPosition equals: 20.
 	self assert: bPlayer ship getFuel equals: 5.
+	
+
+
 ]
 
 { #category : #tests }
@@ -634,7 +646,7 @@ CardTest >> test23RedoCardCopiesAlly [
 	aGame skipTurn: aPlayer. "FOR FUEL"
 	aGame giveTurn: bPlayer.
 	aGame player: bPlayer throwsCard: Redo targetting: cPlayer.
-	self assert: (cPlayer getAlly) equals: bPlayer.
+	self assert: (cPlayer getAlly at: 1) equals: bPlayer.
 
 
 
@@ -1329,7 +1341,7 @@ CardTest >> test48RedoCardAppliedOnPermanentCardCanOnlyBeThrownAtUsersTurn [
 	aGame giveTurn: aPlayer.
 	aGame player: aPlayer throwsCard: Acceleration targetting: aGame getPlayers.
 	aGame giveTurn: bPlayer.
-	aGame player: aPlayer throwsCard: Redo targetting: aGame getPlayers.
+	self should: [ aGame player: aPlayer throwsCard: Redo targetting: aGame getPlayers. ] raise: Error withMessage: 'Permanent card can only be thrown during players turn'.
 	self assert: bPlayer getActiveCards size equals: 1.
 	aGame giveTurn: aPlayer.
 	aGame player: aPlayer throwsCard: Redo targetting: aGame getPlayers.

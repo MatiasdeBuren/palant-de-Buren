@@ -67,6 +67,7 @@ Player >> initializeName: aName initializeShip: aShip [
 	penalization := 0.
 	name:=aName.
 	ship := aShip.
+	ally := OrderedCollection new.
 ]
 
 { #category : #accessing }
@@ -114,7 +115,7 @@ Player >> rollDice: someDice [
 
 { #category : #getsAndSets }
 Player >> setAlly: aPlayer [
-	ally := aPlayer.
+	ally add: aPlayer.
 ]
 
 { #category : #getsAndSets }

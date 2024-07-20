@@ -127,14 +127,17 @@ Game >> playTurn: player [
 Game >> player: aPlayer throwsCard: aCard targetting: aTarget [
 
 	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard))
-		ifTrue: [
-			aPlayer
+		ifFalse: [ Error signal: 'Permanent card can only be thrown during players turn' ].
+	aPlayer
 				useCard:
 				(aCard withTarget: aTarget withCardUser: aPlayer)
 				with: cardManager.
-			aPlayer removeCard: aCard ].
+			aPlayer removeCard: aCard.
 	aCard = Redo ifTrue: [ ^ self ].
 	lastCard := aCard.
+	
+
+
 ]
 
 { #category : #action }
