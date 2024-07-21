@@ -104,7 +104,7 @@ Ship >> resetFuelTank [
 	fuel := maxFuel.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #modifying }
 Ship >> restoreFuelWithTimeMachine [
 	fuel := fuelUsageHistory at: 1.
 ]

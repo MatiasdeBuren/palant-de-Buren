@@ -12,7 +12,7 @@ CardDealer >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyCardDealerOn: aPlayer.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 CardDealer >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyReverseCardDealerOn: aPlayer.
 ]

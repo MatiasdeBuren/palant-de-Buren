@@ -25,7 +25,7 @@ Board >> boardSize [
 	^(squares size).
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #calculating }
 Board >> calculateMissingFuelFor: aPlayer traveling: aDistance [
 
 	| necessaryFuel |
@@ -51,11 +51,6 @@ Board >> canReach: aPlayer distance: aDistance [
 { #category : #action }
 Board >> changeEffectOf: targetSquare [
 	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
-]
-
-{ #category : #action }
-Board >> consumeFuelFor: aPlayer distance: aDistance [
-    aPlayer ship consumeFuel: aDistance.
 ]
 
 { #category : #action }
@@ -85,11 +80,6 @@ Board >> handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance [
 		ally ship consumeFuel: aDistance.
 		self resetToStart: ally.
 		ally penalize: 2 ]
-]
-
-{ #category : #action }
-Board >> hasEnoughFuelFor: aPlayer distance: aDistance [
-    ^ aPlayer ship getFuel >= aDistance.
 ]
 
 { #category : #initialization }

@@ -103,12 +103,12 @@ EffectManager >> initializePlayers: somePlayers initializeBoard: aBoard [
 	lastEffect := NullEffect new.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> revertEffectOf: targetSquare [
 	board changeEffectOf: targetSquare.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 EffectManager >> trigger: anEffect by: aPlayer [
 	anEffect applyEffectWithManager: self triggeredBy: aPlayer.
 	lastEffect := anEffect.

@@ -18,7 +18,7 @@ WormEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyWormOn: aPlayer withLink: linkPosition
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 WormEffect >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyReverseWormOn: aPlayer withLink: linkPosition with: myPosition
 ]

@@ -9,7 +9,7 @@ NullEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	^true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 NullEffect >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	^true.
 ]

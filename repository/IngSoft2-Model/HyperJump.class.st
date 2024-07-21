@@ -17,7 +17,7 @@ HyperJump >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyHyperJumpOn: aPlayer withCycleDistance: self cycleDistance
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 HyperJump >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyReverseHyperJumpOn: aPlayer withCycleDistance: self cycleDistance.
 ]
