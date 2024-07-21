@@ -53,14 +53,10 @@ Ship >> canMove: aDistance [
 Ship >> consumeFuel: someFuel [
 
 	| fuelAmountModule |
-	fuelAmountModule := someFuel abs.
-	fuel := fuel - fuelAmountModule.
-	fuel < 0 ifTrue: [
-		fuel := 0.
-		self addFuelUsage: fuel.
-		^ false ].
+	fuelAmountModule := someFuel "abs".
+	fuel := (fuel - fuelAmountModule) max: 0.
 	self addFuelUsage: fuel.
-	^ true
+
 ]
 
 { #category : #getsAndSets }

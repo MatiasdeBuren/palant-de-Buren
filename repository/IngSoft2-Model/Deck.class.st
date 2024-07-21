@@ -7,13 +7,13 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #getsAndSets }
 Deck class >> getDeck [
 	^(#(Cancellation Repeat Acceleration Ally Overload Redo) asOrderedCollection).
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 Deck class >> getRandomCards: cardAmount [
 	|deck hand|
 	hand := OrderedCollection new.

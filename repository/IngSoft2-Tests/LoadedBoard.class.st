@@ -18,16 +18,43 @@ LoadedBoard >> boardSize [
 	^(squares size).
 ]
 
-{ #category : #initialization }
+{ #category : #'as yet unclassified' }
+LoadedBoard >> calculateMissingFuelFor: aPlayer traveling: aDistance [
+
+	| necessaryFuel |
+	necessaryFuel := aPlayer ship getFuel
+	                 +
+	                 (aPlayer getAlly sumNumbers: [ :ally |
+		                  ally ship getFuel ]).
+	necessaryFuel >= aDistance ifTrue: [ ^ true ].
+	^ false
+]
+
+{ #category : #testing }
 LoadedBoard >> canReach: aPlayer distance: aDistance [
-	| missingFuel |
-	(aPlayer ship consumeFuel: aDistance) ifFalse: [
-		(aPlayer getAlly isEmpty) ifTrue: [^false].
-		missingFuel := aDistance - (aPlayer getAlly at: 1) ship getFuel.
-		((aPlayer getAlly at: 1) ship consumeFuel: missingFuel) ifFalse: [
-			self resetToStart: (aPlayer getAlly at: 1).
-			(aPlayer getAlly at: 1) penalize: 2.
-			^ false ] ].
+
+	| fuelUsed |
+	aPlayer ship getFuel >= aDistance ifTrue: [
+		aPlayer ship consumeFuel: aDistance.
+		^ true ].
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [
+			aPlayer ship consumeFuel: aDistance.
+			aPlayer getAlly do: [ :ally |
+				ally ship consumeFuel: aDistance.
+				self resetToStart: ally.
+				ally penalize: 2 ].
+			^ false ].
+
+	fuelUsed := aDistance - aPlayer ship getFuel.
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally ship getFuel > fuelUsed
+			ifTrue: [ ally ship consumeFuel: fuelUsed ]
+			ifFalse: [
+				fuelUsed := fuelUsed - ally ship getFuel.
+				ally ship consumeFuel: aDistance ] ].
+
 	^ true
 ]
 
@@ -107,9 +134,7 @@ LoadedBoard >> move: aPlayer distance: aDistance [
 			aPlayer ship setShipPosition: shipPosition + aDistance.
 			^(self place: aPlayer at: shipPosition + aDistance)
 			 ]
-		ifFalse: [
-			
-			
+		ifFalse: [		
 			 self resetToStart: aPlayer.
 					  aPlayer penalize: 2.
 					  ^NullEffect new.

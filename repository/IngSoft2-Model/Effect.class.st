@@ -9,7 +9,7 @@ Effect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	self subclassResponsibility 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 Effect >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	self subclassResponsibility 
 ]

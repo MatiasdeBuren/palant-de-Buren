@@ -20,21 +20,47 @@ Board class >> withSize: aSize withWorms: hasWorms withUnits: someParsecs withDi
 	^boardToReturn.
 ]
 
-{ #category : #accessing }
+{ #category : #getsAndSets }
 Board >> boardSize [
 	^(squares size).
 ]
 
+{ #category : #'as yet unclassified' }
+Board >> calculateMissingFuelFor: aPlayer traveling: aDistance [
+
+	| necessaryFuel |
+	necessaryFuel := (aPlayer ship getFuel) + (aPlayer getAlly sumNumbers: [
+		                 :ally | ally getFuel ]).
+	
+	necessaryFuel >= aDistance ifTrue: [ ^ true ].
+	^ false
+]
+
 { #category : #action }
 Board >> canReach: aPlayer distance: aDistance [
-	| missingFuel |
-	(aPlayer ship consumeFuel: aDistance) ifFalse: [
-		(aPlayer getAlly isEmpty) ifTrue: [^false].
-		missingFuel := aDistance - (aPlayer getAlly at: 1) ship getFuel.
-		(aPlayer getAlly ship consumeFuel: missingFuel) ifFalse: [
-			self resetToStart: aPlayer getAlly.
-			aPlayer getAlly penalize: 2.
-			^ false ] ].
+
+	| fuelUsed |
+	aPlayer ship getFuel >= aDistance ifTrue: [
+		aPlayer ship consumeFuel: aDistance.
+		^ true ].
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [
+			aPlayer ship consumeFuel: aDistance.
+			aPlayer getAlly do: [ :ally |
+				ally ship consumeFuel: aDistance.
+				self resetToStart: ally.
+				ally penalize: 2 ].
+			^ false ].
+
+	fuelUsed := aDistance - aPlayer ship getFuel.
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally getFuel > fuelUsed
+			ifTrue: [ ally ship consumeFuel: fuelUsed ]
+			ifFalse: [
+				fuelUsed := fuelUsed - ally ship getFuel.
+				ally ship consumeFuel: aDistance ] ].
+
 	^ true
 ]
 

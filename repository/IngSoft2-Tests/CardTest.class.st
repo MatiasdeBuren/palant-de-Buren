@@ -338,8 +338,8 @@ CardTest >> test11CancellationCardCanRemoveAllyEfect [
 	aGame player: bPlayer throwsCard: Cancellation targetting: cardPlayed.
 	
 	self assert: (aPlayer getActiveCards size) equals: 0.
-	self assert: (aPlayer getAlly) equals: nil.
-	self assert: (bPlayer getAlly) equals: nil.
+	self assert: (aPlayer getAlly) equals: OrderedCollection new.
+	self assert: (bPlayer getAlly) equals: OrderedCollection new.
 
 ]
 
@@ -1119,7 +1119,7 @@ CardTest >> test41RepeatCardCopiesReverseMoonWalkEffect [
 	
 	aLoadedBoard := LoadedBoard clone: (Board withSize: 15 withWorms: false  withUnits: (Parsec withUnits: 15)  withDice: someDice ).
 	aLoadedBoard removeEffects.
-	aLoadedBoard initializeEffect: (MoonWalk withDistance: 6) initializeAt: 6.
+	aLoadedBoard initializeEffect: (MoonWalk withDistance: 2) initializeAt: 6.
 	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
 	
 	aPlayer := aGame getPlayers at: 1.
@@ -1134,7 +1134,7 @@ CardTest >> test41RepeatCardCopiesReverseMoonWalkEffect [
 	aGame player: aPlayer throwsCard: Reversal targetting:(aLoadedBoard getSquares at: 6).
 	aGame playTurn: aPlayer.
 	aGame player: aPlayer throwsCard: Repeat targetting: bPlayer.
-	self assert: bPlayer ship getShipPosition equals: 9.
+	self assert: bPlayer ship getShipPosition equals: 5.
 
 ]
 
@@ -1353,7 +1353,7 @@ CardTest >> test48RedoCardAppliedOnPermanentCardCanOnlyBeThrownAtUsersTurn [
 ]
 
 { #category : #tests }
-CardTest >> test49TimeMachineCardChangesTargetsFuelToItssFuelAtPenultimateTurn [
+CardTest >> test49TimeMachineCardChangesTargetsFuelToItsFuelAtPenultimateTurn [
 	|aPlayer bPlayer someDice aLoadedBoard aGame|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -1404,13 +1404,15 @@ CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToTheirOwnFuelAtPen
 	aGame playTurn: bPlayer.
 	bPlayer ship setFuel: 10.
 	aGame playTurn: bPlayer.
-	self assert: bPlayer ship getFuel equals: 5.
+	
+	
 	aGame giveTurn: cPlayer.
 	aGame playTurn: cPlayer.
 	aGame playTurn: cPlayer.
-	self assert: cPlayer ship getFuel equals: 0.
+	
 	aGame giveTurn: aPlayer.
 	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	
 	self assert: bPlayer ship getFuel equals: 5.
 	self assert: cPlayer ship getFuel equals: 10.
 

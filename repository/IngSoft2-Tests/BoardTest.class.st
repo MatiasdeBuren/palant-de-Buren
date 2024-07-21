@@ -43,7 +43,7 @@ BoardTest >> test03BoardCanMoveShip [
 ]
 
 { #category : #tests }
-BoardTest >> test04TakeOutReturnsTrueWhenShipGetsRemoved [
+BoardTest >> test04TakeOutRemovesShipFromDockedShips [
 	|aBoard aBoardSize aShip aPlayer|
 	aBoardSize := 4.
 
@@ -52,11 +52,11 @@ BoardTest >> test04TakeOutReturnsTrueWhenShipGetsRemoved [
 	aPlayer := Player named: 'Pepe' withShip: aShip.
 	aBoard place: aPlayer at: 3.
 	aBoard takeOut: aPlayer.
-	self assert: (aShip getShipPosition = -1).
+	self assert: (aBoard getSquares at: 3) getDockedShips equals: OrderedCollection new.
 ]
 
 { #category : #tests }
-BoardTest >> test05ValidWhenShipGetsResetToStart [
+BoardTest >> test05ShipsPositionChangesTo1WhenResetToStart [
 
 	|aShip aBoard aPlayer|
 	aShip := Ship withFuel: 1000.

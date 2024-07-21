@@ -18,6 +18,6 @@ Ally >> applyCardEffectWith: aCardManager [
 Ally >> deactivateCard [ 
 	target deactivateCard: self class.
 	cardUser deactivateCard: self class.
-	target removeAlly.
-	cardUser removeAlly.
+	target removeAlly: cardUser.
+	cardUser removeAlly: target.
 ]

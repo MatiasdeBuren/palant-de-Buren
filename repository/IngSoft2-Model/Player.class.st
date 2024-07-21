@@ -70,7 +70,7 @@ Player >> initializeName: aName initializeShip: aShip [
 	ally := OrderedCollection new.
 ]
 
-{ #category : #accessing }
+{ #category : #getsAndSets }
 Player >> penalize: penalizationAmount [
 
 	penalization := penalization + penalizationAmount
@@ -85,8 +85,8 @@ Player >> play: someDice [
 ]
 
 { #category : #removing }
-Player >> removeAlly [
-	ally := nil.
+Player >> removeAlly: anAlly [
+	ally remove: anAlly.
 ]
 
 { #category : #accessing }
