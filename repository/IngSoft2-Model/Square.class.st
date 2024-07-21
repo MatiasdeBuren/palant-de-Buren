@@ -16,18 +16,23 @@ Square class >> createEmptySquare [
 	^(self new) initializeWithEffect: NullEffect new.
 ]
 
+{ #category : #accessing }
+Square >> deactivateCard: aCard [
+	myEffect := myEffect reverseBack.
+]
+
 { #category : #initialization }
 Square >> dockShip: aShip [
 	dockedShips add: aShip.
 	^myEffect.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Square >> getDockedShips [
 	^dockedShips.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Square >> getEffect [
 	^myEffect.
 ]
@@ -37,6 +42,11 @@ Square >> initializeWithEffect: anEffect [
 
 	myEffect := anEffect.
 	dockedShips := OrderedCollection new
+]
+
+{ #category : #action }
+Square >> revertEffect [
+	myEffect := ReverseEffectWrapper withEffectToReverse: myEffect.
 ]
 
 { #category : #modifying }

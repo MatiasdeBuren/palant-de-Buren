@@ -12,33 +12,57 @@ Class {
 }
 
 { #category : #'instance creation' }
-Board class >> withSize: aSize withWorms: hasWorms withParsecs: someParsecs withDice: someDice [
+Board class >> withSize: aSize withWorms: hasWorms withUnits: someParsecs withDice: someDice [
 	|boardToReturn|
-	boardToReturn := ((self new) initializeSize: aSize initializeParsecs: someParsecs).
+	boardToReturn := ((self new) initializeSize: aSize initializeParsecs: someParsecs valueAsParsec).
 	boardToReturn initializeRandomEffects: someDice.
 	(hasWorms) ifTrue: [boardToReturn initializeWormSquares].
 	^boardToReturn.
 ]
 
-{ #category : #accessing }
+{ #category : #getsAndSets }
 Board >> boardSize [
 	^(squares size).
 ]
 
-{ #category : #action }
+{ #category : #calculating }
+Board >> calculateMissingFuelFor: aPlayer traveling: aDistance [
+
+	| necessaryFuel |
+	necessaryFuel := (aPlayer ship getFuel) + (aPlayer getAlly sumNumbers: [
+		                 :ally | ally getFuel ]).
+	
+	necessaryFuel >= aDistance ifTrue: [ ^ true ].
+	^ false
+]
+
+{ #category : #testing }
 Board >> canReach: aPlayer distance: aDistance [
-	| missingFuel |
-	(aPlayer ship consumeFuel: aDistance) ifFalse: [
-		(aPlayer getAlly isNil) ifTrue: [^false].
-		missingFuel := aDistance - aPlayer getAlly ship getFuel.
-		(aPlayer getAlly ship consumeFuel: missingFuel) ifFalse: [
-			self resetToStart: aPlayer getAlly.
-			aPlayer getAlly penalize: 2.
-			^ false ] ].
+
+	(aPlayer hasEnoughFuelForDistance: aDistance) ifTrue: [
+		^ true ].
+
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [ ^ false ].
+
 	^ true
 ]
 
-{ #category : #getsAndSets }
+{ #category : #action }
+Board >> changeEffectOf: targetSquare [
+	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
+]
+
+{ #category : #action }
+Board >> correctPosition: aPosition [
+	| positionToReturn |
+	positionToReturn := aPosition \\ self boardSize.
+	positionToReturn = 0 ifTrue: [^ self boardSize].
+	positionToReturn < 0 ifTrue: [^ positionToReturn + self boardSize].
+	^ positionToReturn.
+]
+
+{ #category : #testing }
 Board >> getParsecs [
 	^parsecs.
 ]
@@ -46,6 +70,16 @@ Board >> getParsecs [
 { #category : #testing }
 Board >> getSquares [
 	^squares.
+]
+
+{ #category : #action }
+Board >> handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance [
+
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally ship consumeFuel: aDistance.
+		self resetToStart: ally.
+		ally penalize: 2 ]
 ]
 
 { #category : #initialization }
@@ -81,7 +115,7 @@ Board >> initializeRandomEffects: someDice [
 			|unitList|
 			unitList := OrderedCollection with: (LightYear withUnits: 2) with:(Parsec withUnits: 1) with: (LightYear withUnits: 1).
 			square initializeWithEffect:
-				(HyperJump withUnits: unitList withBoard: self)
+				(HyperJump withUnits: unitList)
 				].
 
 		probabilityScore > 98 ifTrue: [
@@ -104,8 +138,8 @@ Board >> initializeWormSquares [
 	worm2Position := (self boardSize) atRandom.
 	[ worm1Position = worm2Position ] whileTrue: [
 		worm2Position := (self boardSize) atRandom ].
-	worm1 := WormEffect withLink: worm2Position.
-	worm2 := WormEffect withLink: worm1Position.
+	worm1 := WormEffect with:worm1Position withLink: worm2Position.
+	worm2 := WormEffect with:worm1Position withLink: worm1Position.
 	(squares at: worm1Position) initializeWithEffect: worm1. 
 	(squares at: worm2Position) initializeWithEffect: worm2.
 ]
@@ -115,35 +149,36 @@ Board >> move: aPlayer distance: aDistance [
 
 	| shipPosition |
 	shipPosition := aPlayer ship getShipPosition.
-	(self canReach: aPlayer distance: aDistance )
+	(self canReach: aPlayer distance: aDistance)
 		ifTrue: [
-			(self takeOut: aPlayer).
+			(aPlayer hasEnoughFuelForDistance: aDistance)
+				ifTrue: [ aPlayer ship consumeFuel: aDistance ]
+				ifFalse: [ aPlayer consumeFuelUsingAlliesForADistance: aDistance ].
+
+			self takeOut: aPlayer.
 			aPlayer ship setShipPosition: shipPosition + aDistance.
-			^(self place: aPlayer at: shipPosition + aDistance)
-			 ]
+			^ self place: aPlayer at: shipPosition + aDistance ]
 		ifFalse: [
-			
-			
-			 self resetToStart: aPlayer ship.
-					  aPlayer ship penalize: 2.
-					  ^NullEffect new.
-					 ].
-	
+			self handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance.
+			self resetToStart: aPlayer.
+			aPlayer penalize: 2.
+			^ NullEffect new ]
+]
+
+{ #category : #action }
+Board >> move: aPlayer jumping: someParsecs [
+	self move: aPlayer distance: (someParsecs * (self boardSize / parsecs)) truncated.
 ]
 
 { #category : #action }
 Board >> place: aPlayer at: aPosition [
 
-	| moveTo |
-	moveTo := aPosition.
-	[ moveTo > self boardSize ] whileTrue: [
-		aPlayer ship addLaps: 1.
-		moveTo := moveTo - self boardSize ].
-	[ moveTo <= 0 ] whileTrue: [
-		aPlayer ship addLaps: -1.
-		moveTo := moveTo + self boardSize ].
+	| moveTo lapsToAdd |
+	lapsToAdd := aPosition // self boardSize.
+	moveTo := self correctPosition: aPosition.
 	aPlayer ship setShipPosition: moveTo.
-	^ (squares at: moveTo) dockShip: aPlayer ship.
+	aPlayer ship addLaps: lapsToAdd.
+	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 
 { #category : #'modifier state' }

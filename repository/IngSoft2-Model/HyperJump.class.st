@@ -8,8 +8,8 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-HyperJump class >> withUnits: aUnitList withBoard: aBoard [
-	^(self new) initializeDistances: aUnitList initializeBoard: aBoard
+HyperJump class >> withUnits: aUnitList [
+	^(self new) initializeDistances: aUnitList
 ]
 
 { #category : #application }
@@ -17,18 +17,23 @@ HyperJump >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyHyperJumpOn: aPlayer withCycleDistance: self cycleDistance
 ]
 
+{ #category : #action }
+HyperJump >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyReverseHyperJumpOn: aPlayer withCycleDistance: self cycleDistance.
+]
+
 { #category : #utility }
 HyperJump >> cycleDistance [
 	| temp |
-	temp := distanceList at: distanceList size.
+	temp := distanceList last.
 	distanceList removeLast.
 	distanceList addFirst: temp.
 	^ temp
 ]
 
 { #category : #utility }
-HyperJump >> initializeDistances: aUnitList initializeBoard: aBoard [
+HyperJump >> initializeDistances: aUnitList [
 	distanceList := OrderedCollection new.
-	aUnitList do: [ :someUnit | distanceList add: (someUnit parseToSquares: (aBoard boardSize) parsecAmount: (aBoard getParsecs) )].
+	aUnitList do: [ :someUnit | distanceList add: someUnit valueAsParsec].
 	distanceList sort.
 ]

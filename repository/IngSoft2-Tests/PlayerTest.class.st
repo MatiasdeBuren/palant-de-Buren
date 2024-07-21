@@ -14,7 +14,7 @@ PlayerTest >> should: aErrorBlock raise: anErrorClass withMessage: anErrorMessag
 PlayerTest >> test01PlayersFuelCapacityChangesWhenRollsMaxRoll [
 |aPlayer someDice aLoadedBoard aGame |
 	someDice := OrderedCollection with: (LoadedDie of: 5).
-	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withParsecs: 1  withDice: someDice ).
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false  withUnits: (Parsec withUnits: 1)  withDice: someDice ).
 	aLoadedBoard removeEffects.
 	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 1 withMaxLaps: 100.
 	aPlayer := aGame getPlayers at: 1.
@@ -49,7 +49,7 @@ PlayerTest >> test03PlayerCardsCanBeRemoved [
 { #category : #tests }
 PlayerTest >> test04PlayerCanUseAllysFuelWhenHeDoesntHaveEnough [
 	|aPlayer bPlayer aBoard|
-	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withParsecs: 10 withDice: (OrderedCollection with: (LoadedDie of: 10))).
+	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withUnits: (Parsec withUnits: 1) withDice: (OrderedCollection with: (LoadedDie of: 10))).
 	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 10).
 	bPlayer := Player named: 'Peter' withShip: (Ship withFuel: 10).	
 	aPlayer setAlly: bPlayer.
@@ -63,7 +63,7 @@ PlayerTest >> test04PlayerCanUseAllysFuelWhenHeDoesntHaveEnough [
 { #category : #tests }
 PlayerTest >> test05AlliedPlayersFuelReducesWhenUsedByItsAlly [
 	|aPlayer bPlayer aBoard|
-	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withParsecs: 10 withDice: (OrderedCollection with: (LoadedDie of: 10))).
+	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withUnits: (Parsec withUnits: 1) withDice: (OrderedCollection with: (LoadedDie of: 10))).
 	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 10).
 	bPlayer := Player named: 'Peter' withShip: (Ship withFuel: 10).	
 	aPlayer setAlly: bPlayer.
@@ -77,7 +77,7 @@ PlayerTest >> test05AlliedPlayersFuelReducesWhenUsedByItsAlly [
 { #category : #tests }
 PlayerTest >> test06BothAlliesGetResetWhenTheyDontHaveEnoughCombinedFuel [
 	|aPlayer bPlayer aBoard|
-	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withParsecs: 10 withDice: (OrderedCollection with: (LoadedDie of: 10))).
+	aBoard := LoadedBoard clone: (Board withSize: 20 withWorms: false withUnits: (Parsec withUnits: 1) withDice: (OrderedCollection with: (LoadedDie of: 10))).
 	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 2).
 	bPlayer := Player named: 'Peter' withShip: (Ship withFuel: 2).	
 	aPlayer setAlly: bPlayer.
@@ -86,7 +86,8 @@ PlayerTest >> test06BothAlliesGetResetWhenTheyDontHaveEnoughCombinedFuel [
 	aBoard move: aPlayer distance: 14.
 	self assert: (aPlayer ship getShipPosition) equals: 1.
 	self assert: (bPlayer ship getShipPosition) equals: 1.
-	 
+	self assert: (aPlayer getPenalization) equals: 2.
+	self assert: (bPlayer getPenalization) equals: 2.
 ]
 
 { #category : #tests }
@@ -106,7 +107,7 @@ PlayerTest >> test08PlayerCantUseCardThatHeDoesNotHave [
 	aLoadedBoard := LoadedBoard clone: (Board
 			                 withSize: 20
 			                 withWorms: false
-			                 withParsecs: 1
+			                 withUnits: (Parsec withUnits: 1)
 			                 withDice: someDice).
 	aLoadedBoard removeEffects.
 	aGame := Game
@@ -119,6 +120,18 @@ PlayerTest >> test08PlayerCantUseCardThatHeDoesNotHave [
 	aLoadedBoard place: aPlayer at: 5.
 	
 	aGame giveTurn: aPlayer.
-	self should: [ aGame player: aPlayer throwsCard: Ally targetPlayer: aPlayer targetCard: nil ] raise: Error withMessage: 'Player does not have such card.'. 
+	self should: [ aGame player: aPlayer throwsCard: Ally targetting: aPlayer ] raise: Error withMessage: 'Player does not have such card.'. 
+	 
+]
+
+{ #category : #tests }
+PlayerTest >> test09PlayerCardCanBeRemovedRandomly [
+	|aPlayer aCard bCard|
+	aPlayer := Player named: 'Pepe' withShip: (Ship withFuel: 10).
+	aCard := Card new.
+	bCard := Card new.
+	aPlayer addCards: (OrderedCollection with: aCard with: bCard).
+	aPlayer removeRandomCard.
+	self assert: (aPlayer getCards size) equals: 1. 
 	 
 ]

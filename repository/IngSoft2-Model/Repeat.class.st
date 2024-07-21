@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #initialization }
-Repeat >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyRepeatOn: targetPlayer.
+Repeat >> applyCardEffectWith: aCardManager [
+	aCardManager applyRepeatOn: target.
 ]

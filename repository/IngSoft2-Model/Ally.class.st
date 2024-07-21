@@ -9,13 +9,15 @@ Ally class >> affectRollResult [
 	^0.
 ]
 
-{ #category : #'as yet unclassified' }
-Ally class >> removeCardEffect: aCard fromCards: someCardList fromPlayer: aPlayer [
-   someCardList remove: aCard.
-	aPlayer setAlly: nil
+{ #category : #initialization }
+Ally >> applyCardEffectWith: aCardManager [
+	aCardManager applyAllyOn: target usedBy: cardUser.
 ]
 
 { #category : #initialization }
-Ally >> applyCardEffect: cardUser with: aCardManager [
-	aCardManager applyAllyOn: targetPlayer usedBy: cardUser.
+Ally >> deactivateCard [ 
+	target deactivateCard: self class.
+	cardUser deactivateCard: self class.
+	target removeAlly: cardUser.
+	cardUser removeAlly: target.
 ]

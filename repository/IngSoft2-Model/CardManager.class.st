@@ -16,6 +16,7 @@ CardManager class >> withEffectManager: anEffectManager [
 { #category : #action }
 CardManager >> applyAccelerationOn: targetPlayer [
 	targetPlayer do: [ :player | player activateCard: Acceleration].
+	lastCard := Acceleration
 	
 ]
 
@@ -23,35 +24,58 @@ CardManager >> applyAccelerationOn: targetPlayer [
 CardManager >> applyAllyOn: targetPlayer usedBy: cardUser [
 	cardUser setAlly: targetPlayer.
 	cardUser activateCard: Ally.
-	targetPlayer setAlly: targetPlayer.
+	targetPlayer setAlly: cardUser.
 	targetPlayer activateCard: Ally.
+	lastCard := Ally.
 ]
 
 { #category : #action }
-CardManager >> applyCancellationOn: targetPlayer with: targetCard [
-	targetPlayer deactivateCard: targetCard.
+CardManager >> applyCancellationOn: targetCard [
+	targetCard deactivateCard.
+	lastCard := Cancellation 
 ]
 
 { #category : #action }
 CardManager >> applyOverloadOn: targetPlayer [
 	targetPlayer activateCard: Overload.
+	lastCard := Overload.
 	
 	
 ]
 
 { #category : #action }
-CardManager >> applyRedoOn: targetPlayer with: targetCard [
-	lastCard isNil ifFalse: [
-		(lastCard
-			 withTargetPlayer: targetPlayer
-			 withTargetCard: targetCard) applyCardEffect: targetPlayer with: self]
-	
-	
+CardManager >> applyRedoOn: aTargetPlayer usedBy: aCardUser [
+
+	lastCard ifNotNil: [
+		(lastCard withTarget: aTargetPlayer withCardUser: aCardUser)
+			applyCardEffectWith: self ].
 ]
 
 { #category : #action }
 CardManager >> applyRepeatOn: targetPlayer [
 	effectManager applyLastEffectTriggeredBy: targetPlayer.
+	lastCard := Repeat.
+]
+
+{ #category : #action }
+CardManager >> applyReversalOn: targetSquare [
+	effectManager revertEffectOf: targetSquare.
+	lastCard := Reversal.
+]
+
+{ #category : #action }
+CardManager >> applyTimeMachineOn: targetPlayer [
+	(self timeMachineCanBeUsedOn: targetPlayer) ifFalse: [
+		Error signal:
+			'Time Machine card can only be thrown if target player and their allies have played at least two turns' ].
+	targetPlayer ship restoreFuelWithTimeMachine.
+	targetPlayer getAlly do: [ :ally | ally ship restoreFuelWithTimeMachine ].
+	lastCard := TimeMachine
+]
+
+{ #category : #testing }
+CardManager >> canApply: aCard [
+	^ aCard canBeUsedConsidering: lastCard.
 ]
 
 { #category : #initialization }
@@ -61,7 +85,11 @@ CardManager >> initializeEffectManager: anEffectManager [
 	
 ]
 
-{ #category : #getsAndSets }
-CardManager >> setLastCard: aCard [
-	lastCard := aCard.
+{ #category : #accessing }
+CardManager >> timeMachineCanBeUsedOn: targetPlayer [
+
+	(targetPlayer ship fuelUsageSize > 2 and:
+		 (targetPlayer getAlly allSatisfy: [ :ally |
+			  ally ship fuelUsageSize > 2 ])) ifTrue: [ ^ true ].
+	^ false
 ]

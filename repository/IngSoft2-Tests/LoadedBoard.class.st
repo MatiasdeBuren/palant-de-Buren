@@ -18,23 +18,47 @@ LoadedBoard >> boardSize [
 	^(squares size).
 ]
 
-{ #category : #initialization }
+{ #category : #'as yet unclassified' }
+LoadedBoard >> calculateMissingFuelFor: aPlayer traveling: aDistance [
+
+	| necessaryFuel |
+	necessaryFuel := aPlayer ship getFuel
+	                 +
+	                 (aPlayer getAlly sumNumbers: [ :ally |
+		                  ally ship getFuel ]).
+	necessaryFuel >= aDistance ifTrue: [ ^ true ].
+	^ false
+]
+
+{ #category : #testing }
 LoadedBoard >> canReach: aPlayer distance: aDistance [
-	| missingFuel |
-	(aPlayer ship consumeFuel: aDistance) ifFalse: [
-		(aPlayer getAlly isNil) ifTrue: [^false].
-		missingFuel := aDistance - aPlayer getAlly ship getFuel.
-		(aPlayer getAlly ship consumeFuel: missingFuel) ifFalse: [
-			self resetToStart: aPlayer getAlly.
-			aPlayer getAlly penalize: 2.
-			^ false ] ].
+
+	(aPlayer hasEnoughFuelForDistance: aDistance) ifTrue: [ ^ true ].
+
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [ ^ false ].
+
 	^ true
+]
+
+{ #category : #'as yet unclassified' }
+LoadedBoard >> changeEffectOf: targetSquare [
+	squares do: [ :square | (square = targetSquare) ifTrue: square revertEffect].
 ]
 
 { #category : #initialization }
 LoadedBoard >> copyBoard: aBoard [
 	squares := aBoard getSquares.
 	parsecs := aBoard getParsecs.
+]
+
+{ #category : #'as yet unclassified' }
+LoadedBoard >> correctPosition: aPosition [
+	| positionToReturn |
+	positionToReturn := aPosition \\ self boardSize.
+	positionToReturn = 0 ifTrue: [^ self boardSize].
+	positionToReturn < 0 ifTrue: [^ positionToReturn + self boardSize].
+	^ positionToReturn.
 ]
 
 { #category : #accessing }
@@ -57,6 +81,21 @@ LoadedBoard >> getParsecs [
 	^parsecs.
 ]
 
+{ #category : #'as yet unclassified' }
+LoadedBoard >> getSquares [ 
+	^squares.
+]
+
+{ #category : #'as yet unclassified' }
+LoadedBoard >> handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance [
+
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally ship consumeFuel: aDistance.
+		self resetToStart: ally.
+		ally penalize: 2 ]
+]
+
 { #category : #initialization }
 LoadedBoard >> initializeEffect: anEffect initializeAt: aSquare [
 	(squares at: aSquare) initializeWithEffect: anEffect.
@@ -71,8 +110,8 @@ LoadedBoard >> initializeWormSquares [
 	worm2Position := (self boardSize) atRandom.
 	[ worm1Position = worm2Position ] whileTrue: [
 		worm2Position := (self boardSize) atRandom ].
-	worm1 := WormEffect withLink: worm2Position.
-	worm2 := WormEffect withLink: worm1Position.
+	worm1 := WormEffect with:worm1Position withLink: worm2Position.
+	worm2 := WormEffect with:worm2Position withLink: worm1Position.
 	(squares at: worm1Position) initializeWithEffect: worm1. 
 	(squares at: worm2Position) initializeWithEffect: worm2.
 ]
@@ -82,35 +121,36 @@ LoadedBoard >> move: aPlayer distance: aDistance [
 
 	| shipPosition |
 	shipPosition := aPlayer ship getShipPosition.
-	(self canReach: aPlayer distance: aDistance )
+	(self canReach: aPlayer distance: aDistance)
 		ifTrue: [
-			(self takeOut: aPlayer).
+			(aPlayer hasEnoughFuelForDistance: aDistance)
+				ifTrue: [ aPlayer ship consumeFuel: aDistance ]
+				ifFalse: [ aPlayer consumeFuelUsingAlliesForADistance: aDistance ].
+
+			self takeOut: aPlayer.
 			aPlayer ship setShipPosition: shipPosition + aDistance.
-			^(self place: aPlayer at: shipPosition + aDistance)
-			 ]
+			^ self place: aPlayer at: shipPosition + aDistance ]
 		ifFalse: [
-			
-			
-			 self resetToStart: aPlayer.
-					  aPlayer penalize: 2.
-					  ^NullEffect new.
-					 ].
-	
+			self handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance.
+			self resetToStart: aPlayer.
+			aPlayer penalize: 2.
+			^ NullEffect new ]
+]
+
+{ #category : #'as yet unclassified' }
+LoadedBoard >> move: aPlayer jumping: someParsecs [
+	self move: aPlayer distance: (someParsecs * (self boardSize / parsecs)) truncated.
 ]
 
 { #category : #initialization }
 LoadedBoard >> place: aPlayer at: aPosition [
 
-	| moveTo |
-	moveTo := aPosition.
-	[ moveTo > self boardSize ] whileTrue: [
-		aPlayer ship addLaps: 1.
-		moveTo := moveTo - self boardSize ].
-	[ moveTo <= 0 ] whileTrue: [
-		aPlayer ship addLaps: -1.
-		moveTo := moveTo + self boardSize ].
+	| moveTo lapsToAdd |
+	lapsToAdd := aPosition // self boardSize.
+	moveTo := self correctPosition: aPosition.
 	aPlayer ship setShipPosition: moveTo.
-	^ (squares at: moveTo) dockShip: aPlayer ship.
+	aPlayer ship addLaps: lapsToAdd.
+	^ (squares at: moveTo) dockShip: aPlayer ship
 ]
 
 { #category : #initialization }
@@ -122,21 +162,6 @@ LoadedBoard >> removeEffects [
 LoadedBoard >> resetToStart: aPlayer [
 	self takeOut: aPlayer.
 	self place: aPlayer at: 1.
-]
-
-{ #category : #initialization }
-LoadedBoard >> showBoard [
-
-	| dockedHere |
-	squares do: [ :square |
-		square getDockedShips isEmpty
-			ifTrue: [ Transcript show: '#' ]
-			ifFalse: [
-				square getDockedShips do: [ :thisShip |
-					Transcript show: thisShip getName ].
-				Transcript show: '.' ] ].
-	Transcript
-		show: ''.
 ]
 
 { #category : #initialization }

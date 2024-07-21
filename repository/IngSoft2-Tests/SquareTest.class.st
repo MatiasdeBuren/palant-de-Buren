@@ -35,3 +35,11 @@ SquareTest >> test04SquareReturnsShipWhenDockedShip [
 	aSquare dockShip: aShip.
 	self assert: ((aSquare getDockedShips) at: 1) equals: aShip.
 ]
+
+{ #category : #tests }
+SquareTest >> test05SquareCanChangeEffectToWrapper [
+	|aSquare|
+	aSquare := Square createEmptySquare.
+	aSquare revertEffect.
+	self assert: aSquare getEffect class equals: ReverseEffectWrapper.
+]

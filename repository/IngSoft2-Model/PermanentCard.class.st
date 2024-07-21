@@ -14,7 +14,7 @@ PermanentCard class >> canBeUsedConsidering: lastCard [
 	^false.
 ]
 
-{ #category : #'as yet unclassified' }
-PermanentCard class >> removeCardEffect: aCard from: aCardList [
+{ #category : #initialization }
+PermanentCard >> deactivateCard [
 	self subclassResponsibility.
 ]

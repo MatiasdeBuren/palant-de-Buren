@@ -8,3 +8,8 @@ Class {
 AtomicBomb >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	anEffectManager applyAtomicBomb.
 ]
+
+{ #category : #application }
+AtomicBomb >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	anEffectManager applyAtomicBomb.
+]

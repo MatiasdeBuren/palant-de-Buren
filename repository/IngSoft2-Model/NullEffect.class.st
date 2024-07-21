@@ -8,3 +8,8 @@ Class {
 NullEffect >> applyEffectWithManager: anEffectManager triggeredBy: aPlayer [
 	^true
 ]
+
+{ #category : #action }
+NullEffect >> applyReverseEffectWithManager: anEffectManager triggeredBy: aPlayer [
+	^true.
+]

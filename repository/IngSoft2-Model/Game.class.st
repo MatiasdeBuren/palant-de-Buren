@@ -12,8 +12,6 @@ Class {
 		'maxLaps',
 		'players',
 		'turnHolder',
-		'lastEffect',
-		'lastCard',
 		'effectManager',
 		'cardManager'
 	],
@@ -48,12 +46,13 @@ Game >> canPlay: aPlayer [
 
 { #category : #action }
 Game >> checkBounty: rollRes for: player [
+
 	| prob |
-	(rollRes = (self calculateMaxFuel / 2)) ifTrue: [
-		prob := 100 atRandom.
-		prob > 20
-			ifTrue: [ player ship addFuelCapacity: 1 ]
-			ifFalse: [ player ship addFuelCapacity: -1 ] ]
+	rollRes = (self calculateMaxFuel / 2) ifFalse: [ ^ self ].
+	prob := 100 atRandom.
+	prob > 20
+		ifTrue: [ player ship addFuelCapacity: 1 ]
+		ifFalse: [ player ship addFuelCapacity: -1 ]
 ]
 
 { #category : #action }
@@ -102,8 +101,6 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 	board := aBoard.
 	dice := someDice.
 	players := OrderedCollection new.
-	lastCard := nil.
-	lastEffect := NullEffect new.
 	(1 to: playerAmount) do: [ :x |
 		players add: ((Player
 				  named: x asString
@@ -116,30 +113,25 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 { #category : #action }
 Game >> playTurn: player [
 
-	turnHolder = player ifTrue: [
-		| rollRes thisEffect |
-		rollRes := player play: dice.
-		self checkBounty: rollRes for: player.
-		thisEffect := board move: player distance: rollRes.
-		"thisEffect initializePlayers: players initializeBoard: board."
-		thisEffect applyEffectWithManager: effectManager triggeredBy: player.
-		lastEffect := thisEffect.
-		effectManager setLastEffect: thisEffect ]
+	| rollRes thisEffect |
+	turnHolder = player ifFalse: [ ^ self ].
+	rollRes := player play: dice.
+	self checkBounty: rollRes for: player.
+	thisEffect := board move: player distance: rollRes.
+	effectManager trigger: thisEffect by: player.
 ]
 
 { #category : #action }
-Game >> player: aPlayer throwsCard: aCard targetPlayer: aTargetPlayer targetCard: aTargetCard [
+Game >> player: aPlayer throwsCard: aCard targetting: aTarget [
 
-	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard))
-		ifTrue: [
-			aPlayer
+	(aPlayer = turnHolder or: (cardManager canApply: aCard))
+		ifFalse: [ Error signal: 'Permanent card can only be thrown during players turn' ].
+	aPlayer
 				useCard:
-				(aCard withTargetPlayer: aTargetPlayer withTargetCard: aTargetCard)
+				(aCard withTarget: aTarget withCardUser: aPlayer)
 				with: cardManager.
-			aPlayer removeCard: aCard ].
-	aCard = Redo ifFalse: [
-		lastCard := aCard.
-		cardManager setLastCard: aCard ]
+			aPlayer removeCard: aCard.
+	
 ]
 
 { #category : #action }

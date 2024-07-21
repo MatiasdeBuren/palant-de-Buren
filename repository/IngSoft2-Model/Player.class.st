@@ -30,11 +30,27 @@ Player >> addCards: someCards [
 ]
 
 { #category : #accessing }
-Player >> deactivateCard: aCard [
-	aCard removeCardEffect: aCard fromCards: activeCards fromPlayer: self.
+Player >> consumeFuelUsingAlliesForADistance: aDistance [
+
+	| fuelUsed |
+	fuelUsed := aDistance - ship getFuel.
+	ship consumeFuel: aDistance.
+	ally do: [ :anAlly |
+		anAlly ship getFuel > fuelUsed
+			ifTrue: [
+				anAlly ship consumeFuel: fuelUsed.
+				fuelUsed := 0 ]
+			ifFalse: [
+				fuelUsed := fuelUsed - anAlly ship getFuel.
+				anAlly ship consumeFuel: anAlly ship getFuel ] ]
 ]
 
-{ #category : #getsAndSets }
+{ #category : #accessing }
+Player >> deactivateCard: aCard [
+	activeCards remove: aCard.
+]
+
+{ #category : #testing }
 Player >> getActiveCards [
 	^activeCards.
 ]
@@ -44,7 +60,7 @@ Player >> getAlly [
 	^ally.
 ]
 
-{ #category : #getsAndSets }
+{ #category : #testing }
 Player >> getCards [
 	^cards.
 ]
@@ -61,15 +77,22 @@ Player >> getPenalization [
 ]
 
 { #category : #accessing }
+Player >> hasEnoughFuelForDistance: aDistance [
+
+	^ ship getFuel >= aDistance
+]
+
+{ #category : #accessing }
 Player >> initializeName: aName initializeShip: aShip [
 	cards := OrderedCollection new.
 	activeCards := OrderedCollection new.
 	penalization := 0.
 	name:=aName.
 	ship := aShip.
+	ally := OrderedCollection new.
 ]
 
-{ #category : #accessing }
+{ #category : #getsAndSets }
 Player >> penalize: penalizationAmount [
 
 	penalization := penalization + penalizationAmount
@@ -83,6 +106,11 @@ Player >> play: someDice [
 	^ 0
 ]
 
+{ #category : #removing }
+Player >> removeAlly: anAlly [
+	ally remove: anAlly.
+]
+
 { #category : #accessing }
 Player >> removeCard: aCard [
 
@@ -91,6 +119,11 @@ Player >> removeCard: aCard [
 			cards removeAt: x.
 			^ true ] ].
 	Error signal: 'Player does not have such card.'. 
+]
+
+{ #category : #removing }
+Player >> removeRandomCard [
+	cards removeAt: (cards size atRandom).
 ]
 
 { #category : #accessing }
@@ -104,7 +137,7 @@ Player >> rollDice: someDice [
 
 { #category : #getsAndSets }
 Player >> setAlly: aPlayer [
-	ally := aPlayer.
+	ally add: aPlayer.
 ]
 
 { #category : #getsAndSets }
@@ -114,5 +147,5 @@ Player >> ship [
 
 { #category : #accessing }
 Player >> useCard: aCard with: aCardManager [
-	aCard applyCardEffect: self with: aCardManager.
+	aCard applyCardEffectWith: aCardManager.
 ]
