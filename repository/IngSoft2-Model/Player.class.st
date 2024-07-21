@@ -30,6 +30,22 @@ Player >> addCards: someCards [
 ]
 
 { #category : #accessing }
+Player >> consumeFuelUsingAlliesForADistance: aDistance [
+
+	| fuelUsed |
+	fuelUsed := aDistance - ship getFuel.
+	ship consumeFuel: aDistance.
+	ally do: [ :anAlly |
+		anAlly ship getFuel > fuelUsed
+			ifTrue: [
+				anAlly ship consumeFuel: fuelUsed.
+				fuelUsed := 0 ]
+			ifFalse: [
+				fuelUsed := fuelUsed - anAlly ship getFuel.
+				anAlly ship consumeFuel: anAlly ship getFuel ] ]
+]
+
+{ #category : #accessing }
 Player >> deactivateCard: aCard [
 	activeCards remove: aCard.
 ]
@@ -58,6 +74,12 @@ Player >> getName [
 { #category : #accessing }
 Player >> getPenalization [
 	^penalization.
+]
+
+{ #category : #accessing }
+Player >> hasEnoughFuelForDistance: aDistance [
+
+	^ ship getFuel >= aDistance
 ]
 
 { #category : #accessing }

@@ -36,30 +36,14 @@ Board >> calculateMissingFuelFor: aPlayer traveling: aDistance [
 	^ false
 ]
 
-{ #category : #action }
+{ #category : #testing }
 Board >> canReach: aPlayer distance: aDistance [
 
-	| fuelUsed |
-	aPlayer ship getFuel >= aDistance ifTrue: [
-		aPlayer ship consumeFuel: aDistance.
+	(aPlayer hasEnoughFuelForDistance: aDistance) ifTrue: [
 		^ true ].
-	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
-		ifFalse: [
-			aPlayer ship consumeFuel: aDistance.
-			aPlayer getAlly do: [ :ally |
-				ally ship consumeFuel: aDistance.
-				self resetToStart: ally.
-				ally penalize: 2 ].
-			^ false ].
 
-	fuelUsed := aDistance - aPlayer ship getFuel.
-	aPlayer ship consumeFuel: aDistance.
-	aPlayer getAlly do: [ :ally |
-		ally getFuel > fuelUsed
-			ifTrue: [ ally ship consumeFuel: fuelUsed ]
-			ifFalse: [
-				fuelUsed := fuelUsed - ally ship getFuel.
-				ally ship consumeFuel: aDistance ] ].
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [ ^ false ].
 
 	^ true
 ]
@@ -67,6 +51,11 @@ Board >> canReach: aPlayer distance: aDistance [
 { #category : #action }
 Board >> changeEffectOf: targetSquare [
 	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
+]
+
+{ #category : #action }
+Board >> consumeFuelFor: aPlayer distance: aDistance [
+    aPlayer ship consumeFuel: aDistance.
 ]
 
 { #category : #action }
@@ -86,6 +75,21 @@ Board >> getParsecs [
 { #category : #testing }
 Board >> getSquares [
 	^squares.
+]
+
+{ #category : #action }
+Board >> handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance [
+
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally ship consumeFuel: aDistance.
+		self resetToStart: ally.
+		ally penalize: 2 ]
+]
+
+{ #category : #action }
+Board >> hasEnoughFuelFor: aPlayer distance: aDistance [
+    ^ aPlayer ship getFuel >= aDistance.
 ]
 
 { #category : #initialization }
@@ -155,20 +159,20 @@ Board >> move: aPlayer distance: aDistance [
 
 	| shipPosition |
 	shipPosition := aPlayer ship getShipPosition.
-	(self canReach: aPlayer distance: aDistance )
+	(self canReach: aPlayer distance: aDistance)
 		ifTrue: [
-			(self takeOut: aPlayer).
+			(aPlayer hasEnoughFuelForDistance: aDistance)
+				ifTrue: [ aPlayer ship consumeFuel: aDistance ]
+				ifFalse: [ aPlayer consumeFuelUsingAlliesForADistance: aDistance ].
+
+			self takeOut: aPlayer.
 			aPlayer ship setShipPosition: shipPosition + aDistance.
-			^(self place: aPlayer at: shipPosition + aDistance)
-			 ]
+			^ self place: aPlayer at: shipPosition + aDistance ]
 		ifFalse: [
-			
-			
-			 self resetToStart: aPlayer.
-					  aPlayer penalize: 2.
-					  ^NullEffect new.
-					 ].
-	
+			self handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance.
+			self resetToStart: aPlayer.
+			aPlayer penalize: 2.
+			^ NullEffect new ]
 ]
 
 { #category : #action }

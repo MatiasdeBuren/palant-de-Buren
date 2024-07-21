@@ -33,27 +33,10 @@ LoadedBoard >> calculateMissingFuelFor: aPlayer traveling: aDistance [
 { #category : #testing }
 LoadedBoard >> canReach: aPlayer distance: aDistance [
 
-	| fuelUsed |
-	aPlayer ship getFuel >= aDistance ifTrue: [
-		aPlayer ship consumeFuel: aDistance.
-		^ true ].
-	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
-		ifFalse: [
-			aPlayer ship consumeFuel: aDistance.
-			aPlayer getAlly do: [ :ally |
-				ally ship consumeFuel: aDistance.
-				self resetToStart: ally.
-				ally penalize: 2 ].
-			^ false ].
+	(aPlayer hasEnoughFuelForDistance: aDistance) ifTrue: [ ^ true ].
 
-	fuelUsed := aDistance - aPlayer ship getFuel.
-	aPlayer ship consumeFuel: aDistance.
-	aPlayer getAlly do: [ :ally |
-		ally ship getFuel > fuelUsed
-			ifTrue: [ ally ship consumeFuel: fuelUsed ]
-			ifFalse: [
-				fuelUsed := fuelUsed - ally ship getFuel.
-				ally ship consumeFuel: aDistance ] ].
+	(self calculateMissingFuelFor: aPlayer traveling: aDistance)
+		ifFalse: [ ^ false ].
 
 	^ true
 ]
@@ -103,6 +86,16 @@ LoadedBoard >> getSquares [
 	^squares.
 ]
 
+{ #category : #'as yet unclassified' }
+LoadedBoard >> handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance [
+
+	aPlayer ship consumeFuel: aDistance.
+	aPlayer getAlly do: [ :ally |
+		ally ship consumeFuel: aDistance.
+		self resetToStart: ally.
+		ally penalize: 2 ]
+]
+
 { #category : #initialization }
 LoadedBoard >> initializeEffect: anEffect initializeAt: aSquare [
 	(squares at: aSquare) initializeWithEffect: anEffect.
@@ -128,18 +121,20 @@ LoadedBoard >> move: aPlayer distance: aDistance [
 
 	| shipPosition |
 	shipPosition := aPlayer ship getShipPosition.
-	(self canReach: aPlayer distance: aDistance )
+	(self canReach: aPlayer distance: aDistance)
 		ifTrue: [
-			(self takeOut: aPlayer).
+			(aPlayer hasEnoughFuelForDistance: aDistance)
+				ifTrue: [ aPlayer ship consumeFuel: aDistance ]
+				ifFalse: [ aPlayer consumeFuelUsingAlliesForADistance: aDistance ].
+
+			self takeOut: aPlayer.
 			aPlayer ship setShipPosition: shipPosition + aDistance.
-			^(self place: aPlayer at: shipPosition + aDistance)
-			 ]
-		ifFalse: [		
-			 self resetToStart: aPlayer.
-					  aPlayer penalize: 2.
-					  ^NullEffect new.
-					 ].
-	
+			^ self place: aPlayer at: shipPosition + aDistance ]
+		ifFalse: [
+			self handleTravelWithoutEnoughFuelFor: aPlayer distance: aDistance.
+			self resetToStart: aPlayer.
+			aPlayer penalize: 2.
+			^ NullEffect new ]
 ]
 
 { #category : #'as yet unclassified' }
