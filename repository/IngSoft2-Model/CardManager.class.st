@@ -65,25 +65,17 @@ CardManager >> applyReversalOn: targetSquare [
 
 { #category : #action }
 CardManager >> applyTimeMachineOn: targetPlayer [
-	
-	lastCard := TimeMachine.
-	
-	
+	(self timeMachineCanBeUsedOn: targetPlayer) ifFalse: [
+		Error signal:
+			'Time Machine card can only be thrown if target player and their allies have played at least two turns' ].
+	targetPlayer ship restoreFuelWithTimeMachine.
+	targetPlayer getAlly do: [ :ally | ally ship restoreFuelWithTimeMachine ].
+	lastCard := TimeMachine
 ]
 
-{ #category : #action }
-CardManager >> applyTimeMachineOn: targetPlayer usedBy: aCardUser [
-
-	| fuelToApply penultimateIndex |
-	(self timeMachineCanBeUsedOn: targetPlayer by: aCardUser) ifTrue: [
-		penultimateIndex := aCardUser ship fuelUsage size - 2.
-		fuelToApply := aCardUser ship fuelUsage at: penultimateIndex.
-		targetPlayer ship setFuel: fuelToApply.
-		targetPlayer getAlly do: [ :ally | ally ship setFuel: fuelToApply ].
-		lastCard := TimeMachine ].
-	(self timeMachineCanBeUsedOn: targetPlayer by: aCardUser) ifFalse: [
-		Error signal:
-			'Time Machine card can only be thrown if both players have played at least two turns' ]
+{ #category : #testing }
+CardManager >> canApply: aCard [
+	^ aCard canBeUsedConsidering: lastCard.
 ]
 
 { #category : #initialization }
@@ -93,10 +85,11 @@ CardManager >> initializeEffectManager: anEffectManager [
 	
 ]
 
-{ #category : #'as yet unclassified' }
-CardManager >> timeMachineCanBeUsedOn: targetPlayer by: aCardUser [
+{ #category : #accessing }
+CardManager >> timeMachineCanBeUsedOn: targetPlayer [
 
-	(targetPlayer ship fuelUsage size > 2 and:
-		 aCardUser ship fuelUsage size > 2) ifTrue: [ ^ true ].
+	(targetPlayer ship fuelUsageSize > 2 and:
+		 (targetPlayer getAlly allSatisfy: [ :ally |
+			  ally ship fuelUsageSize > 2 ])) ifTrue: [ ^ true ].
 	^ false
 ]

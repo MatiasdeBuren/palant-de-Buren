@@ -25,6 +25,14 @@ Ship >> addFuelCapacity: someExtraCapacity [
 	maxFuel := maxFuel + someExtraCapacity.
 ]
 
+{ #category : #adding }
+Ship >> addFuelUsage: someFuel [
+
+	self fuelUsageSize > 2 ifTrue:[fuelUsageHistory removeFirst.
+	fuelUsageHistory add: someFuel].
+	self fuelUsageSize < 3 ifTrue: [ fuelUsageHistory add: someFuel ].
+]
+
 { #category : #getsAndSets }
 Ship >> addLaps: lapAmount [
 
@@ -49,15 +57,20 @@ Ship >> consumeFuel: someFuel [
 	fuel := fuel - fuelAmountModule.
 	fuel < 0 ifTrue: [
 		fuel := 0.
-		fuelUsageHistory add: fuel.
+		self addFuelUsage: fuel.
 		^ false ].
-	fuelUsageHistory add: fuel.
+	self addFuelUsage: fuel.
 	^ true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #getsAndSets }
 Ship >> fuelUsage [
 	^fuelUsageHistory.
+]
+
+{ #category : #getsAndSets }
+Ship >> fuelUsageSize [
+	^(fuelUsageHistory size).
 ]
 
 { #category : #getsAndSets }
@@ -86,7 +99,7 @@ Ship >> initializeFuel: someFuel [
 	laps := 0.
 	gravityLevel := 0.
 	fuel := someFuel.
-	fuelUsageHistory := OrderedCollection with: someFuel.
+	fuelUsageHistory := OrderedCollection with: maxFuel.
 	
 ]
 
@@ -96,9 +109,13 @@ Ship >> resetFuelTank [
 ]
 
 { #category : #'as yet unclassified' }
-Ship >> setFuel: someFuel [
+Ship >> restoreFuelWithTimeMachine [
+	fuel := fuelUsageHistory at: 1.
+]
 
-	fuel := someFuel
+{ #category : #testing }
+Ship >> setFuel: someFuel [
+	fuel := someFuel.
 ]
 
 { #category : #getsAndSets }

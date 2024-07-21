@@ -12,7 +12,6 @@ Class {
 		'maxLaps',
 		'players',
 		'turnHolder',
-		'lastCard',
 		'effectManager',
 		'cardManager'
 	],
@@ -102,7 +101,6 @@ Game >> initializeBoard: aBoard initializeDice: someDice initializePlayers: play
 	board := aBoard.
 	dice := someDice.
 	players := OrderedCollection new.
-	lastCard := nil.
 	(1 to: playerAmount) do: [ :x |
 		players add: ((Player
 				  named: x asString
@@ -126,18 +124,14 @@ Game >> playTurn: player [
 { #category : #action }
 Game >> player: aPlayer throwsCard: aCard targetting: aTarget [
 
-	(aPlayer = turnHolder or: (aCard canBeUsedConsidering: lastCard))
+	(aPlayer = turnHolder or: (cardManager canApply: aCard))
 		ifFalse: [ Error signal: 'Permanent card can only be thrown during players turn' ].
 	aPlayer
 				useCard:
 				(aCard withTarget: aTarget withCardUser: aPlayer)
 				with: cardManager.
 			aPlayer removeCard: aCard.
-	aCard = Redo ifTrue: [ ^ self ].
-	lastCard := aCard.
 	
-
-
 ]
 
 { #category : #action }

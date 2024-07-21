@@ -1353,7 +1353,7 @@ CardTest >> test48RedoCardAppliedOnPermanentCardCanOnlyBeThrownAtUsersTurn [
 ]
 
 { #category : #tests }
-CardTest >> test49TimeMachineCardChangesTargetsFuelToUsersFuelAtPenultimateTurn [
+CardTest >> test49TimeMachineCardChangesTargetsFuelToItssFuelAtPenultimateTurn [
 	|aPlayer bPlayer someDice aLoadedBoard aGame|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -1367,10 +1367,6 @@ CardTest >> test49TimeMachineCardChangesTargetsFuelToUsersFuelAtPenultimateTurn 
 	aLoadedBoard place: bPlayer at: 1.
 	aPlayer addCards: (OrderedCollection with: TimeMachine).
 	'--------------------------------------------------------------------------'.
-	aGame giveTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	self assert: aPlayer ship getFuel equals: 0.
 	aGame giveTurn: bPlayer.
 	aGame playTurn: bPlayer.
 	aGame playTurn: bPlayer.
@@ -1384,11 +1380,11 @@ CardTest >> test49TimeMachineCardChangesTargetsFuelToUsersFuelAtPenultimateTurn 
 ]
 
 { #category : #tests }
-CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToUsersFuelAtPenultimateTurn [
+CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToTheirOwnFuelAtPenultimateTurn [
 	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
-	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 100 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
 	aLoadedBoard removeEffects.
 	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
 	
@@ -1401,19 +1397,21 @@ CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToUsersFuelAtPenult
 	aPlayer addCards: (OrderedCollection with: TimeMachine).
 	bPlayer addCards: (OrderedCollection with: Ally).
 	'--------------------------------------------------------------------------'.
-	aGame giveTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	self assert: aPlayer ship getFuel equals: 0.
+	
 	aGame giveTurn: bPlayer.
 	aGame player: bPlayer throwsCard: Ally targetting: cPlayer.
 	aGame playTurn: bPlayer.
 	aGame playTurn: bPlayer.
+	bPlayer ship setFuel: 10.
+	aGame playTurn: bPlayer.
+	self assert: bPlayer ship getFuel equals: 5.
+	aGame giveTurn: cPlayer.
+	aGame playTurn: cPlayer.
+	aGame playTurn: cPlayer.
+	self assert: cPlayer ship getFuel equals: 0.
 	aGame giveTurn: aPlayer.
-	self assert: bPlayer ship getFuel equals: 0.
-	cPlayer ship setFuel: 2.
 	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
-	self assert: bPlayer ship getFuel equals: 10.
+	self assert: bPlayer ship getFuel equals: 5.
 	self assert: cPlayer ship getFuel equals: 10.
 
 
@@ -1421,7 +1419,7 @@ CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToUsersFuelAtPenult
 ]
 
 { #category : #tests }
-CardTest >> test51TimeMachineCardCanOnlyBeThrownIfBothPlayersHavePlayedTheirTurnTwice [
+CardTest >> test51TimeMachineCardCanOnlyBeThrownIfTargetPlayerHasPlayedTwice [
 	|aPlayer bPlayer someDice aLoadedBoard aGame|
 	someDice := OrderedCollection with: (LoadedDie of: 5).
 	
@@ -1436,9 +1434,7 @@ CardTest >> test51TimeMachineCardCanOnlyBeThrownIfBothPlayersHavePlayedTheirTurn
 	aPlayer addCards: (OrderedCollection with: TimeMachine).
 	'--------------------------------------------------------------------------'.
 	aGame giveTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	self should: [ aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer. ] raise: Error withMessage: 'Time Machine card can only be thrown if both players have played at least two turns'.
+	self should: [ aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer. ] raise: Error withMessage: 'Time Machine card can only be thrown if target player and their allies have played at least two turns'.
 	self assert: aPlayer getCards size equals: 3.
 	aGame giveTurn: bPlayer.
 	aGame playTurn: bPlayer.
@@ -1467,10 +1463,6 @@ CardTest >> test52RedoCardCopiesTimeMachine [
 	aLoadedBoard place: bPlayer at: 1.
 	aPlayer addCards: (OrderedCollection with: TimeMachine with: Redo).
 	'--------------------------------------------------------------------------'.
-	aGame giveTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	aGame playTurn: aPlayer.
-	self assert: aPlayer ship getFuel equals: 0.
 	aGame giveTurn: bPlayer.
 	aGame playTurn: bPlayer.
 	aGame playTurn: bPlayer.
@@ -1482,4 +1474,90 @@ CardTest >> test52RedoCardCopiesTimeMachine [
 	self assert: bPlayer ship getFuel equals: 10.
 
 
+]
+
+{ #category : #tests }
+CardTest >> test53TimeMachineCardChangesTargetsFuelAndItsAlliesToUsersFuelAtPenultimateTurn [
+	|aPlayer bPlayer cPlayer dPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 4 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	dPlayer := aGame getPlayers at: 4.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aLoadedBoard place: cPlayer at: 1.
+	aLoadedBoard place: dPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine).
+	bPlayer addCards: (OrderedCollection with: Ally with: Ally).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Ally targetting: cPlayer.
+	aGame player: bPlayer throwsCard: Ally targetting: dPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self assert: bPlayer ship getFuel equals: 0.
+	cPlayer ship setFuel: 100.
+	aGame giveTurn: cPlayer. 
+	aGame playTurn: cPlayer.
+	aGame playTurn: cPlayer. 
+	aGame playTurn: cPlayer.
+	self assert: cPlayer ship getFuel equals: 85.
+	dPlayer ship setFuel: 200.
+	aGame giveTurn: dPlayer. 
+	aGame playTurn: dPlayer.
+	aGame playTurn: dPlayer. 
+	aGame playTurn: dPlayer. 
+	aGame playTurn: dPlayer.
+	self assert: dPlayer ship getFuel equals: 180.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	self assert: bPlayer ship getFuel equals: 10.
+	self assert: cPlayer ship getFuel equals: 95.
+	self assert: dPlayer ship getFuel equals: 190.
+
+
+]
+
+{ #category : #tests }
+CardTest >> test54TimeMachineCardCanOnleBeThrownIfTargetAndItsAlliesHavePlayedAtLeastTwice [
+	|aPlayer bPlayer cPlayer dPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 4 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	dPlayer := aGame getPlayers at: 4.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aLoadedBoard place: cPlayer at: 1.
+	aLoadedBoard place: dPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine).
+	bPlayer addCards: (OrderedCollection with: Ally with: Ally).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Ally targetting: cPlayer.
+	aGame player: bPlayer throwsCard: Ally targetting: dPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self should: [ aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer. ] raise: Error withMessage: 'Time Machine card can only be thrown if target player and their allies have played at least two turns'.
+	aGame giveTurn: cPlayer.
+	aGame playTurn: cPlayer.
+	aGame playTurn: cPlayer.
+	self should: [ aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer. ] raise: Error withMessage: 'Time Machine card can only be thrown if target player and their allies have played at least two turns'.
+	aGame giveTurn: dPlayer.
+	aGame playTurn: dPlayer.
+	aGame playTurn: dPlayer.
+	aGame giveTurn: aPlayer.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
 ]

@@ -27,7 +27,7 @@ ReverseEffectWrapper >> initializeEffectToRevert: anEffect [
 	effectToRevert := anEffect.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #getsAndSets }
 ReverseEffectWrapper >> reverseBack [
 	^effectToRevert.
 ]

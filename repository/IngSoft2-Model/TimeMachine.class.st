@@ -6,5 +6,5 @@ Class {
 
 { #category : #initialization }
 TimeMachine >> applyCardEffectWith: aCardManager [
-	aCardManager applyTimeMachineOn: target usedBy: cardUser.
+	aCardManager applyTimeMachineOn: target.
 ]

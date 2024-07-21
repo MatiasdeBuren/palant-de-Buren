@@ -43,7 +43,7 @@ Board >> changeEffectOf: targetSquare [
 	squares do: [ :square | (square = targetSquare) ifTrue: [square revertEffect]].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #action }
 Board >> correctPosition: aPosition [
 	| positionToReturn |
 	positionToReturn := aPosition \\ self boardSize.
