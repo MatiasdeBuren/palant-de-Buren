@@ -1382,3 +1382,104 @@ CardTest >> test49TimeMachineCardChangesTargetsFuelToUsersFuelAtPenultimateTurn 
 
 
 ]
+
+{ #category : #tests }
+CardTest >> test50TimeMachineCardChangesTargetsFuelAndItsAllyToUsersFuelAtPenultimateTurn [
+	|aPlayer bPlayer cPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 3 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	cPlayer := aGame getPlayers at: 3.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aLoadedBoard place: cPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine).
+	bPlayer addCards: (OrderedCollection with: Ally).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getFuel equals: 0.
+	aGame giveTurn: bPlayer.
+	aGame player: bPlayer throwsCard: Ally targetting: cPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self assert: bPlayer ship getFuel equals: 0.
+	cPlayer ship setFuel: 2.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	self assert: bPlayer ship getFuel equals: 10.
+	self assert: cPlayer ship getFuel equals: 10.
+
+
+
+]
+
+{ #category : #tests }
+CardTest >> test51TimeMachineCardCanOnlyBeThrownIfBothPlayersHavePlayedTheirTurnTwice [
+	|aPlayer bPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self should: [ aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer. ] raise: Error withMessage: 'Time Machine card can only be thrown if both players have played at least two turns'.
+	self assert: aPlayer getCards size equals: 3.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self assert: bPlayer ship getFuel equals: 0.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	self assert: bPlayer ship getFuel equals: 10.
+
+
+
+]
+
+{ #category : #tests }
+CardTest >> test52RedoCardCopiesTimeMachine [
+	|aPlayer bPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine with: Redo).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getFuel equals: 0.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self assert: bPlayer ship getFuel equals: 0.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	bPlayer ship setFuel: 200.
+	aGame player: aPlayer throwsCard: Redo targetting: bPlayer.
+	self assert: bPlayer ship getFuel equals: 10.
+
+
+]

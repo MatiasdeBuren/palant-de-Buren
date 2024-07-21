@@ -81,7 +81,9 @@ CardManager >> applyTimeMachineOn: targetPlayer usedBy: aCardUser [
 		targetPlayer ship setFuel: fuelToApply.
 		targetPlayer getAlly do: [ :ally | ally ship setFuel: fuelToApply ].
 		lastCard := TimeMachine ].
-	
+	(self timeMachineCanBeUsedOn: targetPlayer by: aCardUser) ifFalse: [
+		Error signal:
+			'Time Machine card can only be thrown if both players have played at least two turns' ]
 ]
 
 { #category : #initialization }
