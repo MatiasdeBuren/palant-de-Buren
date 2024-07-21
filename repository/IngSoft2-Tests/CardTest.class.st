@@ -1351,3 +1351,34 @@ CardTest >> test48RedoCardAppliedOnPermanentCardCanOnlyBeThrownAtUsersTurn [
 
 
 ]
+
+{ #category : #tests }
+CardTest >> test49TimeMachineCardChangesTargetsFuelToUsersFuelAtPenultimateTurn [
+	|aPlayer bPlayer someDice aLoadedBoard aGame|
+	someDice := OrderedCollection with: (LoadedDie of: 5).
+	
+	aLoadedBoard := LoadedBoard clone: (Board withSize: 25 withWorms: false  withUnits: (Parsec withUnits: 10)  withDice: someDice ).
+	aLoadedBoard removeEffects.
+	aGame := Game withBoard: aLoadedBoard withDice: someDice withPlayers: 2 withMaxLaps: 100.
+	
+	aPlayer := aGame getPlayers at: 1.
+	bPlayer := aGame getPlayers at: 2.
+	aLoadedBoard place: aPlayer at: 1.
+	aLoadedBoard place: bPlayer at: 1.
+	aPlayer addCards: (OrderedCollection with: TimeMachine).
+	'--------------------------------------------------------------------------'.
+	aGame giveTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	aGame playTurn: aPlayer.
+	self assert: aPlayer ship getFuel equals: 0.
+	aGame giveTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame playTurn: bPlayer.
+	aGame giveTurn: aPlayer.
+	self assert: bPlayer ship getFuel equals: 0.
+	aGame player: aPlayer throwsCard: TimeMachine targetting: bPlayer.
+	self assert: bPlayer ship getFuel equals: 10.
+
+
+
+]

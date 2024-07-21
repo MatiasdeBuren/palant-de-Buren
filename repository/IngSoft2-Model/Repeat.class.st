@@ -8,8 +8,3 @@ Class {
 Repeat >> applyCardEffectWith: aCardManager [
 	aCardManager applyRepeatOn: target.
 ]
-
-{ #category : #initialization }
-Repeat >> deactivateCard [ 
-	target deactivateCard: self class
-]

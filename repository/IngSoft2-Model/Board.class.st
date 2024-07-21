@@ -138,8 +138,8 @@ Board >> move: aPlayer distance: aDistance [
 		ifFalse: [
 			
 			
-			 self resetToStart: aPlayer ship.
-					  aPlayer ship penalize: 2.
+			 self resetToStart: aPlayer.
+					  aPlayer penalize: 2.
 					  ^NullEffect new.
 					 ].
 	

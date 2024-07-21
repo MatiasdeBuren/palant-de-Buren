@@ -95,3 +95,16 @@ ShipTest >> test07ShipsLapsReduceWhenExceedsBoardGoingBackwards [
 	aBoard move: aPlayer distance: -11.
 	self assert: (aPlayer ship getLaps) equals: 3.
 ]
+
+{ #category : #tests }
+ShipTest >> test08ShipsStoresFuelUsageWhenItMoves [
+	|aBoard aBoardSize aPlayer aShip|
+	aBoardSize := 5.
+	aBoard := Board withSize: aBoardSize withWorms: false withUnits: (Parsec withUnits: 1) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aShip := Ship withFuel: 20.
+	aPlayer := Player named: 'Pepe' withShip: aShip.
+	aBoard place: aPlayer at: 1.
+	aBoard move: aPlayer distance: 5.
+	aBoard move: aPlayer distance: 20.
+	self assert: (aShip fuelUsage) equals: (OrderedCollection with: 20 with: 15 with: 0).
+]

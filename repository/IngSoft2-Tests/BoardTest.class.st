@@ -120,7 +120,17 @@ BoardTest >> test10BoardSizeCanMoveAShipSomeParsecAmount [
 ]
 
 { #category : #tests }
-BoardTest >> test11BoardMovesPlayerToStartIfItsLapCountWouldBeNegative [
+BoardTest >> test11BoardChangesSquareEffectToWrapper [
+
+	|aBoard aShip|
+	aBoard := Board withSize: 30 withWorms: false withUnits: (Parsec withUnits: 30) withDice: (OrderedCollection with: (LoadedDie of: 3)).
+	aShip := Ship withFuel: 10000.
+	aBoard changeEffectOf: (aBoard getSquares at: 3).
+	self assert: (aBoard getSquares at: 3) getEffect class equals: ReverseEffectWrapper.
+]
+
+{ #category : #tests }
+BoardTest >> test12BoardMovesPlayerToStartIfItsLapCountWouldBeNegative [
 
 	|aBoard aPlayer aShip|
 	aBoard := Board withSize: 30 withWorms: false withUnits: (Parsec withUnits: 30) withDice: (OrderedCollection with: (LoadedDie of: 3)).

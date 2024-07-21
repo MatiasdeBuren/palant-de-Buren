@@ -63,9 +63,38 @@ CardManager >> applyReversalOn: targetSquare [
 	lastCard := Reversal.
 ]
 
+{ #category : #action }
+CardManager >> applyTimeMachineOn: targetPlayer [
+	
+	lastCard := TimeMachine.
+	
+	
+]
+
+{ #category : #action }
+CardManager >> applyTimeMachineOn: targetPlayer usedBy: aCardUser [
+
+	| fuelToApply penultimateIndex |
+	(self timeMachineCanBeUsedOn: targetPlayer by: aCardUser) ifTrue: [
+		penultimateIndex := aCardUser ship fuelUsage size - 2.
+		fuelToApply := aCardUser ship fuelUsage at: penultimateIndex.
+		targetPlayer ship setFuel: fuelToApply.
+		targetPlayer getAlly do: [ :ally | ally ship setFuel: fuelToApply ].
+		lastCard := TimeMachine ].
+	
+]
+
 { #category : #initialization }
 CardManager >> initializeEffectManager: anEffectManager [
 	effectManager := anEffectManager.
 	lastCard := nil.
 	
+]
+
+{ #category : #'as yet unclassified' }
+CardManager >> timeMachineCanBeUsedOn: targetPlayer by: aCardUser [
+
+	(targetPlayer ship fuelUsage size > 2 and:
+		 aCardUser ship fuelUsage size > 2) ifTrue: [ ^ true ].
+	^ false
 ]

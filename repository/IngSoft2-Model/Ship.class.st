@@ -9,7 +9,8 @@ Class {
 		'position',
 		'fuel',
 		'maxFuel',
-		'laps'
+		'laps',
+		'fuelUsageHistory'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -48,8 +49,15 @@ Ship >> consumeFuel: someFuel [
 	fuel := fuel - fuelAmountModule.
 	fuel < 0 ifTrue: [
 		fuel := 0.
+		fuelUsageHistory add: fuel.
 		^ false ].
+	fuelUsageHistory add: fuel.
 	^ true
+]
+
+{ #category : #'as yet unclassified' }
+Ship >> fuelUsage [
+	^fuelUsageHistory.
 ]
 
 { #category : #getsAndSets }
@@ -78,12 +86,19 @@ Ship >> initializeFuel: someFuel [
 	laps := 0.
 	gravityLevel := 0.
 	fuel := someFuel.
+	fuelUsageHistory := OrderedCollection with: someFuel.
 	
 ]
 
 { #category : #accessing }
 Ship >> resetFuelTank [
 	fuel := maxFuel.
+]
+
+{ #category : #'as yet unclassified' }
+Ship >> setFuel: someFuel [
+
+	fuel := someFuel
 ]
 
 { #category : #getsAndSets }

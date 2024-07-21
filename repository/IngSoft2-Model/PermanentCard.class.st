@@ -13,3 +13,8 @@ PermanentCard class >> affectRollResult [
 PermanentCard class >> canBeUsedConsidering: lastCard [
 	^false.
 ]
+
+{ #category : #initialization }
+PermanentCard >> deactivateCard [
+	self subclassResponsibility.
+]

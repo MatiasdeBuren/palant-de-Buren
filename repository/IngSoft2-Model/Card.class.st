@@ -24,11 +24,6 @@ Card >> applyCardEffectWith: aCardManager [
 ]
 
 { #category : #initialization }
-Card >> deactivateCard [
-	self subclassResponsibility.
-]
-
-{ #category : #initialization }
 Card >> initializeTarget: aTarget initializeCardUser: aCardUser [
 	target := aTarget.
 	cardUser := aCardUser.
